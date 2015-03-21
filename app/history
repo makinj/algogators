@@ -1,8 +1,0 @@
-cd ../
-phonegap run android
-nano ~/.bash_profile 
-reload
-phonegap platform add android
-reload
-phonegap platform add android
-git status
