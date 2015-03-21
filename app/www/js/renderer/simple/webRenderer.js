@@ -15,7 +15,7 @@ var webRenderer = (function(){
         $(eApp).append(eCanvas);
         context = eCanvas.getContext("2d");
         initCanvas();
-        loadImages(imagesLoaded);
+        loadImages(onImagesLoaded);
     }
 
     function onImagesLoaded(){
