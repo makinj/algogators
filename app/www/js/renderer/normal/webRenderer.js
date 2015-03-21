@@ -6,6 +6,8 @@ var webRenderer = (function(){
 
     var eApp, eCanvas;
 
+    var algSize, eggSize;
+
     var context;
 
     var assetsLoaded = false;
@@ -45,12 +47,18 @@ var webRenderer = (function(){
             // Load the colored egg and alligator
             var algImage = new Image();
             algImage.src = "./img/alligators/gator" + color.replace("#","") + ".svg";
-            algImage.onload = markImageLoaded;
+            algImage.onload = function(){
+                if (!algSize) algSize = {width: algImage.width, height: algImage.height};
+                markImageLoaded();
+            };
             imgs["alg" + color.replace("#","")] = algImage;
 
             var eggImage = new Image();
             eggImage.src = "./img/eggs/egg" + color.replace("#","") + ".svg";
-            eggImage.onload = markImageLoaded;
+            eggImage.onload = function(){
+                if (!eggSize) eggSize = {width: eggImage.width, height: eggImage.height};
+                markImageLoaded();
+            };
             imgs["egg" + color.replace("#","")] = eggImage;
         });
         console.log("Loading images...");
@@ -96,16 +104,10 @@ var webRenderer = (function(){
     }
 
     function getAlligatorSize(){
-        return {
-            width:2,
-            height:1
-        };
+        return algSize;
     }
     function getEggSize(){
-        return {
-            width:1,
-            height:1
-        };
+        return eggSize;
     }
     function getScreenSize(){
         return {
@@ -119,6 +121,7 @@ var webRenderer = (function(){
         "clear": clearCanvas,
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
+        "drawDummy": drawDummy,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
