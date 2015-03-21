@@ -12,9 +12,9 @@ var simpleScene=(function(){
     }
 
     function initSceneVars(){
-        screenSize = rend.getScreenSize();
-        alligatorRatio = rend.getAlligatorSize().height / rend.getAlligatorSize().width;
-        eggRatio = rend.getEggSize().height / rend.getEggSize().width;
+        screenSize = renderer.getScreenSize();
+        alligatorRatio = renderer.getAlligatorSize().height / renderer.getAlligatorSize().width;
+        eggRatio = renderer.getEggSize().height / renderer.getEggSize().width;
     }
 
     function calculateFamilySize(family){
