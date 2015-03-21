@@ -10,7 +10,7 @@ var platform = (function(){
         renderer.initialize();
         scene.initialize();
         ui.initialize();
-        /* //Sample Scene
+        //Sample Scene
         scene.drawScene(
             [
               {
@@ -111,7 +111,7 @@ var platform = (function(){
         }
             ]
         );
-        //*/
+        //
     }
 
     return {
