@@ -1,7 +1,7 @@
 var simplerScene = (function(){
 
     var initialX,initialY;
-    var colors = ["#f00","#0f0","#00f","#ff0","#0ff","#f0f"];
+    var colors;
     var margin = .1;
     var elementArray = [];
 
@@ -12,6 +12,7 @@ var simplerScene = (function(){
 
     function initialize(){
         var windowSize = renderer.getScreenSize();
+        colors = renderer.colors;
         initialX = windowSize.width;
         initialY = windowSize.height;
     }
@@ -19,12 +20,12 @@ var simplerScene = (function(){
 
     function rootDrawScene(foodChain){
         for (var i =0;i<foodChain.length;i++){
-            drawElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
+            saveElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
         }
         drawElementArray();
     }
 
-    function drawElement(element, x, y, szx, szy){
+    function saveElement(element, x, y, szx, szy){
 
         if (element.type == "family" || element.type == "dummyFamily"){
             var totalElements = element.gators.length + 1;
@@ -34,14 +35,14 @@ var simplerScene = (function(){
             var bxy = szy / totalElements;
 
             for (var i = 0;i < element.gators.length;i++){
-                drawElement(element.gators[i], x, y + bxy * i, bxx, bxy);
+                saveElement(element.gators[i], x, y + bxy * i, bxx, bxy);
             }
 
             // Box size for foodChain
             bxx = szx / element.foodChain.length;
 
             for (var i = 0;i < element.foodChain.length;i++){
-                drawElement(element.foodChain[i], x + bxx * i, y + bxy * (totalElements - 1), bxx, bxy);
+                saveElement(element.foodChain[i], x + bxx * i, y + bxy * (totalElements - 1), bxx, bxy);
             }
 
         } else if ( element.type == "gator" ){
@@ -108,12 +109,12 @@ var simplerScene = (function(){
     function drawElementArray(){
         for (var i = 0 ; i < elementArray.length ; i++){
             if (!(dragging && elementArray[i].id == currentElementId)){
-                renderElement(elementArray[i]);
+                drawSingleElement(elementArray[i]);
             }
         }
     }
 
-    function renderElement(e){
+    function drawSingleElement(e){
         if (!e){
             return;
         }
@@ -163,7 +164,7 @@ var simplerScene = (function(){
             currentElementPos.bottomRight.y = y+currentElementPos.size.y;
             renderer.clear("#fff");
             drawElementArray();
-            renderElement(currentElementPos);
+            drawSingleElement(currentElementPos);
             renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
         }
 
