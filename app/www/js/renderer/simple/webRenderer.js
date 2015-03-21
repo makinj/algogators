@@ -76,6 +76,20 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+    function drawHighlight(x,y,width,height,color){
+        //Add a placeholder function for browsers that don't have setLineDash()
+        if (!context.setLineDash) {
+            context.setLineDash = function () {}
+        }
+        if (!assetsLoaded) return;
+        // Draw the square
+        context.beginPath();
+        context.setLineDash([1,0]);
+        context.rect(x,y,width,height);
+        context.stroke();
+        context.closePath();
+    }
+
     function getAlligatorSize(){
         return {
             width:2,
@@ -101,6 +115,7 @@ var webRenderer = (function(){
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
         "drawDummy": drawDummy,
+        "drawHighlight": drawHighlight,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
