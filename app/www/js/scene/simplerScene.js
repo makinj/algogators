@@ -147,7 +147,6 @@ var simplerScene = (function(){
 
     function uiMouseUp(x,y){
         var selectedElementId = getIdAt(x,y);
-        console.log(selectedElementId);
         if (selectedElementId){
             dragging = false;
             controller.swapElements(selectedElementId,currentElementId);
