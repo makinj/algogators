@@ -60,6 +60,13 @@ var normalWebRenderer = (function(){
         };
         imgs["bg"] = bgImage;
 
+        var bannerImage = new Image();
+        bannerImage.src = "./img/banner.svg";
+        bannerImage.onload = function(){
+                markImageLoaded();
+        };
+        imgs['banner'] = bannerImage;
+
         colors.forEach(function(color){
             // Load the colored egg and alligator
             var algImage = new Image();
@@ -210,11 +217,11 @@ var normalWebRenderer = (function(){
         context.drawImage(imgs["egg009688"],ul_x,ul_y,width,height);
     }
 
-	function drawBanner(width,height){
-        if (!assetsLoaded) return;
+	function drawBanner(x,y,width,height){
+        while (!assetsLoaded);
         var ul_x = x - (width/2); // x, upper left corner
         var ul_y = y - (height/2); // y, upper left corner
-        context.drawImage(imgs["logo"],ul_x,ul_y,width,height);
+        context.drawImage(imgs["banner"],ul_x,ul_y,width,height);
 	}
 
 	function drawBgImg(){
