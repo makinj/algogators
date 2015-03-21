@@ -1,8 +1,13 @@
 maxId = 0;
 maxColorId = 0;
 
-mainFoodChain1 = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] } ] }, { "type": "family", "id": 12, "gators": [ { "type": "gator", "id": 13, "colorId": 4 }, { "type": "gator", "id": 14, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 15, "colorId": 4 } ] }]');
-mainFoodChain2 = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] } ] }, { "type": "family", "id": 12, "gators": [ { "type": "gator", "id": 13, "colorId": 4 }, { "type": "gator", "id": 14, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 15, "colorId": 4 } ] }]');
+NOT = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 5, "colorId": 2 }, { "type": "gator", "id": 6, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 7, "colorId": 3 } ] }, { "type": "family", "id": 8, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] };
+
+AND = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 }, { "type": "egg", "id": 5, "colorId": 2 }, { "type": "family", "id": 6, "gators": [ { "type": "gator", "id": 7, "colorId": 3 }, { "type": "gator", "id": 8, "colorId": 4 } ], "foodChain": [ { "type": "egg", "id": 9, "colorId": 4 } ] } ] };
+
+FALSE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 2 } ] };
+
+TRUE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 } ] };
 
 function getMaxIds(foodChain){
   for (var i = 0; i < foodChain.length; i++) {
@@ -114,6 +119,7 @@ function replaceEggs(family, colorId, newFamily){
 }
 
 function copyFamily(family, colorMap){
+  colorMap = colorMap || {};
   newFamily = {type:"family", id:++maxId, gators:[], foodChain:[]};//create blank family with new Id
 
   for (var i=0; i < family.gators.length; i++){//add each gator over with new Id's and new color Id's
@@ -139,30 +145,29 @@ function copyFamily(family, colorMap){
 
 }
 
-getMaxIds(mainFoodChain1);
+getMaxIds([AND]);
 
+mainFoodChain = [AND, copyFamily(FALSE), copyFamily(FALSE)];
 
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
-reduce(mainFoodChain1);
-console.log(JSON.stringify(mainFoodChain1));
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
 
-
-console.log(maxColorId);
-console.log(isEqual(mainFoodChain1, mainFoodChain2));
+//console.log(isEqual(mainFoodChain, mainFoodChain2));
 
 /*
 family:
