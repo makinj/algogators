@@ -1,11 +1,12 @@
 var simplerScene = (function(){
 
     var initialX,initialY;
-    var colors = ["#f00","#0f0","#00f","#ff0","#0ff","#f0f"];
+    var colors;
     var margin = .1;
     var elementArray = [];
     function initialize(){
         var windowSize = renderer.getScreenSize();
+        colors = renderer.colors;
         initialX = windowSize.width;
         initialY = windowSize.height;
     }
