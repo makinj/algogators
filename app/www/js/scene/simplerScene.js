@@ -132,7 +132,7 @@ var simplerScene = (function(){
             dragging = true;
             currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
-            currentElementPos = elementArray[selectedElementId];
+            currentElementPos = elementArray[currentElementIndex];
             console.log("currentElementPos");
             console.log(currentElementPos);
         }
@@ -164,13 +164,14 @@ var simplerScene = (function(){
             hoverElementIndex = getObjectIndexAtId(currentElementId);
             var e = elementArray[hoverElementIndex];
 
-            // currentElementPos.topLeft.x = x;
-            // currentElementPos.topLeft.y = y;
-            // currentElementPos.bottomRight.x = x+currentElementPos.size.x;
-            // currentElementPos.bottomRight.y = y+currentElementPos.size.y;
-            // renderer.clear("#fff");
-            // drawElementArray();
-            // renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            currentElementPos.topLeft.x = x;
+            currentElementPos.topLeft.y = y;
+            currentElementPos.bottomRight.x = x+currentElementPos.size.x;
+            currentElementPos.bottomRight.y = y+currentElementPos.size.y;
+            renderer.clear("#fff");
+            drawElementArray();
+            renderElement(currentElementPos);
+            renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
         }
 
     }
