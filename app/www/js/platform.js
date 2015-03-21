@@ -7,9 +7,7 @@ var platform = (function(){
         window.scene = simplerScene;
         window.ui = webUI;
 
-        renderer.initialize();
-        scene.initialize();
-        ui.initialize();
+        renderer.initialize(function(){
         /* //Sample Scene
         scene.drawScene(
             [
