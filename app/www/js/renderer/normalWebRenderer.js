@@ -49,7 +49,15 @@ var normalWebRenderer = (function(){
 						if (!bgSize) bgSize = {width: bgImage.width, height: bgImage.height};
 						markImageLoaded();
 				};
-                imgs['bgImage.png'] = bgImage
+                imgs['bg'] = bgImage;
+
+                var bannerImage = new Image();
+                bannerImage.src = "./img/banner.svg";
+                bannerImage.onload = function(){
+                        markImageLoaded();
+                };
+                imgs['banner'] = bannerImage;
+
         colors.forEach(function(color){
             // Load the colored egg and alligator
             var algImage = new Image();
@@ -124,16 +132,16 @@ var normalWebRenderer = (function(){
         context.closePath();
     }
 
-	function drawBanner(width,height){
-        if (!assetsLoaded) return;
+	function drawBanner(x,y,width,height){
+        while (!assetsLoaded);
         var ul_x = x - (width/2); // x, upper left corner
         var ul_y = y - (height/2); // y, upper left corner
-        context.drawImage(imgs["logo"],ul_x,ul_y,width,height);
+        context.drawImage(imgs["banner"],ul_x,ul_y,width,height);
 	}
 
 	function drawBgImg(){
             screenSize = getScreenSize();
-   			context.drawImage(imgs["bgImage.png"],0,0,screenSize.width, screenSize.height);
+   			context.drawImage(imgs["bg"],0,0,screenSize.width, screenSize.height);
 	}
 
     //x and y are center of button
