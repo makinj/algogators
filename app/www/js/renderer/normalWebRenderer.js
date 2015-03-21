@@ -2,6 +2,8 @@ var normalWebRenderer = (function(){
 
     var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
 
+    imgNames = ["banner", "next", "back"];
+
     var imgs = {};
 
     var eApp, eCanvas;
@@ -42,21 +44,25 @@ var normalWebRenderer = (function(){
                 onFinish();
             }
         }
+		var bgImage = new Image();
+		bgImage.src = "./img/bg.png";
+		bgImage.onload = function(){
+				if (!bgSize) bgSize = {width: bgImage.width, height: bgImage.height};
+				markImageLoaded();
+		};
+        imgs['bg'] = bgImage;
 
-				var bgImage = new Image();
-				bgImage.src = "./img/bg.png";
-				bgImage.onload = function(){
-						if (!bgSize) bgSize = {width: bgImage.width, height: bgImage.height};
-						markImageLoaded();
-				};
-                imgs['bg'] = bgImage;
 
-                var bannerImage = new Image();
-                bannerImage.src = "./img/banner.png";
-                bannerImage.onload = function(){
-                        markImageLoaded();
-                };
-                imgs['banner'] = bannerImage;
+
+        imgNames.forEach(function(imgName){
+            var image = new Image();
+            image.src = "./img/"+imgName+".png";
+            image.onload = function(){
+                markImageLoaded();
+            }
+            imgs[imgName] = image;
+        });
+
 
         colors.forEach(function(color){
             // Load the colored egg and alligator
@@ -187,6 +193,13 @@ var normalWebRenderer = (function(){
         };
     }
 
+    function drawImgButton(imgName,x,y,width,height){
+        while (!assetsLoaded);
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs[imgName],ul_x,ul_y,width,height);
+    }
+
     return {
         "initialize": initialize,
         "clear": clearCanvas,
@@ -200,6 +213,7 @@ var normalWebRenderer = (function(){
         "colors": colors,
 				"drawBanner": drawBanner,
 				"drawBgImg": drawBgImg,
-				"drawButton": drawButton
+				"drawButton": drawButton,
+                "drawImgButton": drawImgButton
     };
 })();
