@@ -19,7 +19,7 @@ var simplerScene = (function(){
 
     function drawElement(element, x, y, szx, szy){
 
-        if (element.type == "family"){
+        if (element.type == "family" || element.type == "dummyFamily"){
             var totalElements = element.gators.length + 1;
 
             // Box size for gators
@@ -60,8 +60,8 @@ var simplerScene = (function(){
             aw = ah * algSize.width / algSize.height;
         }
 
-        x = x + w/2 - aw/2
-        y = y + h/2 - ah/2
+        x = x + w/2 - aw/2 ;
+        y = y + h/2 - ah/2 ;
 
         renderer.drawAlligator(
             x, y,
@@ -72,10 +72,19 @@ var simplerScene = (function(){
 
     function fitDummy(x,y,w,h,color, id){
 
+        var aw = w - w * margin * 2;
+        var ah = h - h * margin * 2;
+
+    
+        x = x + w/2 - aw/2 ;
+        y = y + h/2 - ah/2 ;
+
         renderer.drawDummy(
             x, y,
-            w, h
+            aw, ah
             );
+
+
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
     }
 
