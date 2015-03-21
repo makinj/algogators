@@ -19,6 +19,7 @@ var simplerScene = (function(){
 
 
     function rootDrawScene(foodChain){
+        elementArray = [];
         for (var i =0;i<foodChain.length;i++){
             addElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
         }
