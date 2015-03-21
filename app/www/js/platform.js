@@ -59,23 +59,23 @@ var platform = (function(){
                   },
                   {
                     "type": "family",
-                    "id": 13,
+                    "id": 9,
                     "gators": [
                       {
                         "type": "gator",
-                        "id": 14,
+                        "id": 10,
                         "colorId": 5
                       },
                       {
                         "type": "gator",
-                        "id": 15,
+                        "id": 11,
                         "colorId": 6
                       }
                     ],
                     "foodChain": [
                       {
                         "type": "egg",
-                        "id": 16,
+                        "id": 12,
                         "colorId": 5
                       }
                     ]
@@ -84,44 +84,44 @@ var platform = (function(){
           },
           {
             "type": "family",
-            "id": 9,
+            "id": 13,
             "gators": [
               {
                 "type": "gator",
-                "id": 10,
+                "id": 14,
                 "colorId": 2
               },
               {
                 "type": "gator",
-                "id": 11,
+                "id": 15,
                 "colorId": 1
               }
             ],
             "foodChain": [
               {
                 "type": "egg",
-                "id": 12,
+                "id": 16,
                 "colorId": 2
               }
             ]
         },
         {
             "type": "dummy",
-            "id": 16,
+            "id": 17,
         },
         {
             "type": "dummyFamily",
-            "id": 17,
+            "id": 18,
             "gators": [
               {
                 "type": "dummy",
-                "id": 10,
+                "id": 19,
               }
             ],
             "foodChain": [
               {
                 "type": "dummy",
-                "id": 12,
+                "id": 20,
               }
             ]
         }

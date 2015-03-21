@@ -132,9 +132,7 @@ var simplerScene = (function(){
             dragging = true;
             currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
-            currentElementPos = elementArray[currentElementIndex];
-            console.log("currentElementPos");
-            console.log(currentElementPos);
+            currentElementPos = JSON.parse(JSON.stringify(elementArray[currentElementIndex]));
         }
 
     }
@@ -143,25 +141,20 @@ var simplerScene = (function(){
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId){
             dragging = false;
-            controller.swapElements(selectedElement,currentElement);
+            controller.swapElements(selectedElementId,currentElementId);
         }
         else{
             dragging = false;
-            elementArray[selectedElementId] = currentElementPos;
         }
         renderer.clear("#fff");
         drawElementArray();
-
-
     }
 
     function uiMouseMove(x,y){
         if (dragging){
             var hoverElement = getIdAt(x,y);
-            console.log("hoverElement");
 
-            console.log(hoverElement);
-            hoverElementIndex = getObjectIndexAtId(currentElementId);
+            hoverElementIndex = getObjectIndexAtId(hoverElement);
             var e = elementArray[hoverElementIndex];
 
             currentElementPos.topLeft.x = x;
@@ -190,11 +183,8 @@ var simplerScene = (function(){
     }
 
     function getObjectIndexAtId(id){
-        console.log(id);
         for (var i = 0 ; i < elementArray.length ; i++){
             if (elementArray[i].id == id){
-                console.log(i);
-                console.log(elementArray[i]);
                 return i;
             }
         }
