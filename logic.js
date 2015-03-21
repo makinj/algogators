@@ -2,7 +2,7 @@
 maxId = 0;
 maxColorId = 0;
 
-mainFoodChain = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "family", "id": 5, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] }, { "type": "family", "id": 12, "gators": [ { "type": "gator", "id": 13, "colorId": 6 }, { "type": "gator", "id": 14, "colorId": 7 } ], "foodChain": [ { "type": "egg", "id": 15, "colorId": 6 } ] }]');
+mainFoodChain = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "family", "id": 5, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] }, { "type": "family", "id": 12, "gators": [ { "type": "gator", "id": 13, "colorId": 6 }, { "type": "gator", "id": 14, "colorId": 7 } ], "foodChain": [ { "type": "egg", "id": 15, "colorId": 7 } ] }]');
 
 function getMaxIds(foodChain){
   for (var i = 0; i < foodChain.length; i++) {
@@ -32,14 +32,24 @@ function getMaxIds(foodChain){
 
 function reduce(foodChain){
   if(foodChain[0].gators.length>0){//alpha reduce or done
-    gator = foodChain[0].gators[0];
-    food = families[1];
-    replaceEggs(foodChain[0], gator.colorId, food);
-    //search through eater's foodChain recursively and replace eggs with a matching
-  }else{//eta reduce
+    if(foodChain.length==1){
+      console.log("donezo");
+      return 0;
+    }
+    console.log("alpha");
 
+    gator = foodChain[0].gators[0];
+    food = foodChain[1];
+    replaceEggs(foodChain[0], gator.colorId, food);
+    foodChain.splice(1, 1);//removes the food
+    foodChain[0].gators.splice(0,1);//removes the gator
+  }else{//eta reduce
+    console.log("eta");
+    Array.prototype.unshift.apply(foodChain, foodChain.shift().foodChain);
   }
+  return 1;
 }
+
 
 function isEqual(foodChain1, foodChain2) {
 	if (foodChain1.length != foodChain2.length) return 0;
@@ -76,22 +86,24 @@ function isEqual(foodChain1, foodChain2) {
 	return 1;
 }
 
+
 function replaceEggs(family, colorId, newFamily){
   for (var i = 0; i < family.foodChain.length; i++) {
     if(family.foodChain[i].type=="family"){
       replaceEggs(family.foodChain[i], colorId, newFamily);
     }else{
-      family.foodChain[i].type="family";
+      if(family.foodChain[i].colorId==colorId){
+        family.foodChain[i] = copyFamily(newFamily, {});
+      }
     }
   }
 }
 
 function copyFamily(family, colorMap){
-
-  newFamily = {type:"family", id:maxId++, gators:[], foodChain:[]};//create blank family with new Id
+  newFamily = {type:"family", id:++maxId, gators:[], foodChain:[]};//create blank family with new Id
 
   for (var i=0; i < family.gators.length; i++){//add each gator over with new Id's and new color Id's
-    newFamily.gators[i]={type:"gator", id:maxId++, colorId:maxColorId++};
+    newFamily.gators[i]={type:"gator", id:++maxId, colorId:++maxColorId};
     colorMap[family.gators[i].colorId]=maxColorId;//mark that this colorId is changed for all children eggs
   }
 
@@ -100,7 +112,7 @@ function copyFamily(family, colorMap){
     if(family.foodChain[i].type=="family"){
       newFamily.foodChain[i] = copyFamily(family.foodChain[i], colorMap);
     }else{
-      newFamily.foodChain[i] = {type:"egg", id:maxId++};
+      newFamily.foodChain[i] = {type:"egg", id:++maxId};
 
       if(family.foodChain[i].colorId in colorMap){
         newFamily.foodChain[i].colorId = colorMap[family.foodChain[i].colorId];
@@ -114,8 +126,27 @@ function copyFamily(family, colorMap){
 }
 
 getMaxIds(mainFoodChain);
-console.log(JSON.stringify(copyFamily(mainFoodChain[1], {})));
-console.log(maxId);
+
+
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+reduce(mainFoodChain);
+console.log(JSON.stringify(mainFoodChain));
+
+
 console.log(maxColorId);
 
 /*
@@ -134,6 +165,4 @@ egg:
   type="egg"
   id
   colorId
-<<<<<<< HEAD
-
 */
