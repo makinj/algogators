@@ -10,12 +10,14 @@ var platform = (function(){
         renderer.initialize(function(){
             scene.initialize();
             ui.initialize();
+
             controller.initialize();
             controller.startGame();
+
             /*
             renderer.drawBgImg();
             renderer.drawButton(800,450,200,100, "Play!");
-            renderer.drawBanner(800,250,400,400);
+            renderer.drawBanner(800,200,400,300);
             */
         });
     }
