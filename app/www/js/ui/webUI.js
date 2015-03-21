@@ -5,7 +5,7 @@ var webUI = (function(){
     }
 
     function windowClick(e){
-        scene.removeAt(e.pageX, e.pageY);
+        console.log(scene.getIdAt(e.pageX, e.pageY));
     }
 
     return {
