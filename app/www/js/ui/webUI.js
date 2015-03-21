@@ -1,11 +1,19 @@
 var webUI = (function(){
 
     function initialize(){
-        window.addEventListener("click", windowClick);
+        window.addEventListener("mousedown", windowMouseDown);
+        window.addEventListener("mouseup", windowMouseUp);
+        window.addEventListener("mousemove", windowMouseMove);
     }
 
-    function windowClick(e){
-        console.log(scene.getIdAt(e.pageX, e.pageY));
+    function windowMouseDown(e){
+         scene.uiMouseDown(e.pageX,e.pageY);
+    }
+    function windowMouseUp(e){
+        scene.uiMouseUp(e.pageX,e.pageY);
+    }
+    function windowMouseMove(e){
+        scene.uiMouseMove(e.pageX,e.pageY);
     }
 
     return {
