@@ -15,6 +15,8 @@ foodChainTest = [{ "type": "family", "id": 1, "gators": [ { "type": "gator", "id
 
 foodChainTest1 = [{ "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 3 }]}];
 
+LOOP = [{"type":"family", "id":1, "gators":[{"type":"gator", "id":2, "colorId":1}], "foodChain":[{"type":"egg", "id":3, "colorId":1},{"type":"egg", "id":4, "colorId":1}]},{"type":"family", "id":5, "gators":[{"type":"gator", "id":6, "colorId":2}], "foodChain":[{"type":"egg", "id":7, "colorId":2},{"type":"egg", "id":8, "colorId":2}]}];
+
 function getMaxIds(foodChain){
   for (var i = 0; i < foodChain.length; i++) {
     if(foodChain[i].id>maxId){
@@ -42,23 +44,26 @@ function getMaxIds(foodChain){
 }
 
 function reduce(foodChain){
+  step = {"events":[]};
   if(foodChain[0].gators.length>0){//alpha reduce or done
     if(foodChain.length==1){
-      console.log("donezo");
       return 0;
     }
-    console.log("alpha");
-
     gator = foodChain[0].gators[0];
     food = foodChain[1];
-    replaceEggs(foodChain[0], gator.colorId, food);
+    step.events[0]={"action":"eat"}
+    step.events[0].gator = gator.id;
+    step.events[0].food = food.id;
+    step.events = step.events.concat(replaceEggs(foodChain[0], gator.colorId, food));
     foodChain.splice(1, 1);//removes the food
     foodChain[0].gators.splice(0,1);//removes the gator
   }else{//eta reduce
-    console.log("eta");
+    step.events[0]={"action":"moveUp", "family":foodChain[0].id};
     Array.prototype.unshift.apply(foodChain, foodChain.shift().foodChain);
+
   }
-  return 1;
+  step.state = JSON.parse(JSON.stringify(foodChain));
+  return step;
 }
 
 
@@ -118,15 +123,19 @@ function isEqual(foodChain1, foodChain2, colorMap1, colorMap2) {
 
 
 function replaceEggs(family, colorId, newFamily){
+  events = [];
   for (var i = 0; i < family.foodChain.length; i++) {
     if(family.foodChain[i].type=="family"){
-      replaceEggs(family.foodChain[i], colorId, newFamily);
+      events = events.concat(replaceEggs(family.foodChain[i], colorId, newFamily));
     }else{
       if(family.foodChain[i].colorId==colorId){
+        events[events.length]={"action":"hatch", "egg":family.foodChain[i].id};
         family.foodChain[i] = copyFamily(newFamily, {});
+        events[events.length-1].family = family.foodChain[i].id
       }
     }
   }
+  return events;
 }
 
 function copyFamily(family, colorMap){
@@ -153,8 +162,27 @@ function copyFamily(family, colorMap){
     }
   }
   return newFamily;
-
 }
+
+function fullyReduce(mainFoodChain, inputs){
+  inputs = inputs||[];
+  mainFoodChain = JSON.parse(JSON.stringify(mainFoodChain));
+  getMaxIds(mainFoodChain);
+  for(var i=0;i<inputs.length;i++){
+    mainFoodChain[mainFoodChain.length]=copyFamily(inputs[i]);
+  }
+  steps = [];
+  step = reduce(mainFoodChain);
+  while(step!=0 && steps.length<100){
+    steps[steps.length]=step;
+    step = reduce(mainFoodChain);
+  }
+  console.log(JSON.stringify(steps));
+  return steps
+}
+
+//fullyReduce([AND], [TRUE, TRUE]);
+fullyReduce(LOOP);
 /*
 getMaxIds([OR]);
 
@@ -178,7 +206,7 @@ console.log(JSON.stringify(mainFoodChain));
 reduce(mainFoodChain);
 console.log(JSON.stringify(mainFoodChain));
 */
-console.log(isEqual(foodChainTest, foodChainTest1));
+//console.log(isEqual(foodChainTest, foodChainTest1));
 
 /*
 family:
