@@ -8,6 +8,8 @@ var simplerScene = (function(){
     var dragging = false;
     var currentElementId ;
     var currentElementIndex ;
+    var currentElementPos ;
+
     function initialize(){
         var windowSize = renderer.getScreenSize();
         initialX = windowSize.width;
@@ -105,15 +107,22 @@ var simplerScene = (function(){
 
     function drawElementArray(){
         for (var i = 0 ; i < elementArray.length ; i++){
-            var e = elementArray[i];
-
-            if ( elementArray[i].type == "gator" ){
-                renderer.drawAlligator (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            } else if ( elementArray[i].type == "egg" ){
-                renderer.drawEgg (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            } else if ( elementArray[i].type == "dummy" ){
-                renderer.drawDummy (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            if (!(dragging && elementArray[i].id == currentElementId)){
+                renderElement(elementArray[i]);
             }
+        }
+    }
+
+    function renderElement(e){
+        if (!e){
+            return;
+        }
+        if ( e.type == "gator" ){
+            renderer.drawAlligator(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+        } else if ( e.type == "egg" ){
+            renderer.drawEgg(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+        } else if ( e.type == "dummy" ){
+            renderer.drawDummy(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
         }
     }
 
@@ -121,9 +130,11 @@ var simplerScene = (function(){
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId){
             dragging = true;
-            currentElementId = selectedElement;
+            currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
-
+            currentElementPos = elementArray[selectedElementId];
+            console.log("currentElementPos");
+            console.log(currentElementPos);
         }
 
     }
@@ -134,22 +145,33 @@ var simplerScene = (function(){
             dragging = false;
             controller.swapElements(selectedElement,currentElement);
         }
+        else{
+            dragging = false;
+            elementArray[selectedElementId] = currentElementPos;
+        }
+        renderer.clear("#fff");
+        drawElementArray();
+
 
     }
 
     function uiMouseMove(x,y){
-        var hoverElement = getIdAt(x,y);
-        hoverElementIndex = getObjectIndexAtId(currentElementId);
-        var e = elementArray[hoverElementIndex];
+        if (dragging){
+            var hoverElement = getIdAt(x,y);
+            console.log("hoverElement");
 
-        var current = elementArray[currentElementIndex];
-        current.topLeft.x = x;
-        current.topLeft.y = y;
-        current.bottomRight.x = x+current.size.x;
-        current.bottomRight.y = y+current.size.y;
-        clearCanvas();
-        drawElementArray();
-        renderer.drawHighlight (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            console.log(hoverElement);
+            hoverElementIndex = getObjectIndexAtId(currentElementId);
+            var e = elementArray[hoverElementIndex];
+
+            // currentElementPos.topLeft.x = x;
+            // currentElementPos.topLeft.y = y;
+            // currentElementPos.bottomRight.x = x+currentElementPos.size.x;
+            // currentElementPos.bottomRight.y = y+currentElementPos.size.y;
+            // renderer.clear("#fff");
+            // drawElementArray();
+            // renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+        }
 
     }
 
@@ -167,9 +189,11 @@ var simplerScene = (function(){
     }
 
     function getObjectIndexAtId(id){
+        console.log(id);
         for (var i = 0 ; i < elementArray.length ; i++){
-            var element = elementArray[i];
-            if (element.id == id){
+            if (elementArray[i].id == id){
+                console.log(i);
+                console.log(elementArray[i]);
                 return i;
             }
         }
@@ -179,6 +203,9 @@ var simplerScene = (function(){
     return {
         "initialize": initialize,
         "drawScene": rootDrawScene,
-        "getIdAt": getIdAt
+        "getIdAt": getIdAt,
+        "uiMouseDown": uiMouseDown,
+        "uiMouseUp": uiMouseUp,
+        "uiMouseMove": uiMouseMove
     };
 })();

@@ -80,12 +80,9 @@ var webRenderer = (function(){
         // Draw the square
         context.beginPath();
         // context.setLineDash([5,2]);
+        context.setLineDash([1,0]);
         context.rect(x,y,width,height);
         context.stroke();
-        if (color){
-            context.fillStyle = color;
-            context.fill();
-        }
         context.closePath();
     }
 
@@ -114,6 +111,7 @@ var webRenderer = (function(){
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
         "drawDummy": drawDummy,
+        "drawHighlight": drawHighlight,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize
