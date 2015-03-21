@@ -11,6 +11,10 @@ FALSE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "co
 
 TRUE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 } ] };
 
+foodChainTest = [{ "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 3 }]}];
+
+foodChainTest1 = [{ "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 3 }]}];
+
 function getMaxIds(foodChain){
   for (var i = 0; i < foodChain.length; i++) {
     if(foodChain[i].id>maxId){
@@ -58,50 +62,55 @@ function reduce(foodChain){
 }
 
 
-function isEqual(foodChain1, foodChain2) {
+function isEqual(foodChain1, foodChain2, colorMap1, colorMap2) {
 	if (foodChain1.length != foodChain2.length) return 0;
 	for (var i = 0; i < foodChain1.length; i++)
 		if (foodChain1[i].type != foodChain2[i].type) return 0;
-	var eggMap1 = {};
-	var eggMap2 = {};
-	var gatorMap1 = {};
-	var gatorMap2 = {};
+
+  colorMap1 = colorMap1 || {};
+  colorMap1 = JSON.parse(JSON.stringify(colorMap1));//hacky javascript object copy
+
+  colorMap2 = colorMap2 || {};
+  colorMap2 = JSON.parse(JSON.stringify(colorMap2));//hacky javascript object copy
 	// Iterate over families and eggs (elements)
 	for (var i = 0; i < foodChain1.length; i++) {
 		var element1 = foodChain1[i];
 		var element2 = foodChain2[i];
 		if (element1.type == "egg") {
 			// if we already have a mapping for this color but it's different now, the food-chains are different
-			if ((element1.colorId in eggMap1) && eggMap1[element1.colorId] != element2.colorId)
-				return 0;
-			if ((element2.colorId in eggMap2) && eggMap2[element2.colorId] != element1.colorId)
+			if ((element1.colorId in colorMap1) && colorMap1[element1.colorId] != element2.colorId)
 				return 0;
 			// if we haven't seen this color yet, add this mapping
-			if (!(element1 in eggMap1))
-				eggMap1[element1.colorId] = element2.colorId;
-			if (!(element2 in eggMap2))
-				eggMap2[element2.colorId] = element1.colorId;
+			if (!(element1 in colorMap1))
+				colorMap1[element1.colorId] = element2.colorId;
+
+      if ((element2.colorId in colorMap2) && colorMap2[element2.colorId] != element1.colorId)
+        return 0;
+      // if we haven't seen this color yet, add this mapping
+      if (!(element2 in colorMap2))
+        colorMap2[element2.colorId] = element1.colorId;
 		}
 		else if (element1.type == "family") {
 			if (element1.gators.length != element2.gators.length) return 0;
-			if (element1.foodChain.length != element2.foodChain.length) return 0;
 			// Iterate over gators
 			var gators1 = element1.gators;
 			var gators2 = element2.gators;
 			for (var j = 0; j < gators1.length; j++) {
 				// if we already have a mapping for this color but it's different now, the food-chains are different
-				if ((gators1[j].colorId in gatorMap1) && gatorMap1[gators1[j].colorId] != gators2[j].colorId)
-					return 0;
-				if ((gators2[j].colorId in gatorMap2) && gatorMap2[gators2[j].colorId] != gators1[j].colorId)
+				if ((gators1[j].colorId in colorMap1) && colorMap1[gators1[j].colorId] != gators2[j].colorId)
 					return 0;
 				// if we haven't seen this color yet, add this mapping
-				if (!(gators1[j] in gatorMap1))
-					gatorMap1[gators1[j].colorId] = gators2[j].colorId;
-				if (!(gators2[i] in gatorMap2))
-					gatorMap2[gators2[j].colorId] = gators1[j].colorId;
+				if (!(gators1[j] in colorMap1))
+					colorMap1[gators1[j].colorId] = gators2[j].colorId;
+
+        if ((gators2[j].colorId in colorMap2) && colorMap2[gators2[j].colorId] != gators1[j].colorId)
+          return 0;
+        // if we haven't seen this color yet, add this mapping
+        if (!(gators2[j] in colorMap2))
+          colorMap2[gators2[j].colorId] = gators1[j].colorId;
 			}
 			// Recurse for sub-foodChains
-			if (!isEqual(element1.foodChain, element2.foodChain)) return 0;
+			if (!isEqual(element1.foodChain, element2.foodChain, colorMap1, colorMap2)) return 0;
 		}
 	}
 	return 1;
@@ -146,7 +155,7 @@ function copyFamily(family, colorMap){
   return newFamily;
 
 }
-
+/*
 getMaxIds([OR]);
 
 mainFoodChain = [OR, copyFamily(TRUE), copyFamily(TRUE)];
@@ -168,8 +177,8 @@ reduce(mainFoodChain);
 console.log(JSON.stringify(mainFoodChain));
 reduce(mainFoodChain);
 console.log(JSON.stringify(mainFoodChain));
-
-//console.log(isEqual(mainFoodChain, mainFoodChain2));
+*/
+console.log(isEqual(foodChainTest, foodChainTest1));
 
 /*
 family:
