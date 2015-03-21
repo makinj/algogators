@@ -4,6 +4,10 @@ var simplerScene = (function(){
     var colors = ["#f00","#0f0","#00f","#ff0","#0ff","#f0f"];
     var margin = .1;
     var elementArray = [];
+
+    var dragging = false;
+    var currentElementId ;
+    var currentElementIndex ;
     function initialize(){
         var windowSize = renderer.getScreenSize();
         initialX = windowSize.width;
@@ -64,11 +68,6 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        // renderer.drawAlligator(
-        //     x, y,
-        //     aw, ah,
-        //     color);
-        console.log(color);
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator'});
     }
 
@@ -77,15 +76,8 @@ var simplerScene = (function(){
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
 
-
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
-
-        // renderer.drawDummy(
-        //     x, y,
-        //     aw, ah
-        //     );
-
 
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy'});
     }
@@ -107,26 +99,60 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2
         y = y + h/2 - ah/2
 
-        // renderer.drawEgg(x,y,aw,ah,color);
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,   'color' : color,'type':'egg'});
 
     }
 
     function drawElementArray(){
-        // console.log(elementArray);
         for (var i = 0 ; i < elementArray.length ; i++){
             var e = elementArray[i];
-            console.log(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
 
-            if          ( elementArray[i].type == "gator" ){
-                renderer.drawAlligator  (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            } else if   ( elementArray[i].type == "egg" ){
-                renderer.drawEgg        (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            } else if   ( elementArray[i].type == "dummy" ){
-                renderer.drawDummy      (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            if ( elementArray[i].type == "gator" ){
+                renderer.drawAlligator (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            } else if ( elementArray[i].type == "egg" ){
+                renderer.drawEgg (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            } else if ( elementArray[i].type == "dummy" ){
+                renderer.drawDummy (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
             }
         }
     }
+
+    function uiMouseDown(x,y){
+        var selectedElementId = getIdAt(x,y);
+        if (selectedElementId){
+            dragging = true;
+            currentElementId = selectedElement;
+            currentElementIndex = getObjectIndexAtId(currentElementId);
+
+        }
+
+    }
+
+    function uiMouseUp(x,y){
+        var selectedElementId = getIdAt(x,y);
+        if (selectedElementId){
+            dragging = false;
+            controller.swapElements(selectedElement,currentElement);
+        }
+
+    }
+
+    function uiMouseMove(x,y){
+        var hoverElement = getIdAt(x,y);
+        hoverElementIndex = getObjectIndexAtId(currentElementId);
+        var e = elementArray[hoverElementIndex];
+
+        var current = elementArray[currentElementIndex];
+        current.topLeft.x = x;
+        current.topLeft.y = y;
+        current.bottomRight.x = x+current.size.x;
+        current.bottomRight.y = y+current.size.y;
+        clearCanvas();
+        drawElementArray();
+        renderer.drawHighlight (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+
+    }
+
 
     function getIdAt(x,y){
         for (var i = 0 ; i < elementArray.length ; i++){
@@ -135,6 +161,16 @@ var simplerScene = (function(){
                 if (y >= element.topLeft.y && y <= element.bottomRight.y){
                     return element.id;
                 }
+            }
+        }
+        return null;
+    }
+
+    function getObjectIndexAtId(id){
+        for (var i = 0 ; i < elementArray.length ; i++){
+            var element = elementArray[i];
+            if (element.id == id){
+                return i;
             }
         }
         return null;
