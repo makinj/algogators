@@ -84,7 +84,6 @@ var webRenderer = (function(){
         if (!assetsLoaded) return;
         // Draw the square
         context.beginPath();
-        // context.setLineDash([5,2]);
         context.setLineDash([1,0]);
         context.rect(x,y,width,height);
         context.stroke();

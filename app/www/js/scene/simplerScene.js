@@ -165,7 +165,9 @@ var simplerScene = (function(){
             renderer.clear("#fff");
             drawElementArray();
             drawSingleElement(currentElementPos);
-            renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            if (e){
+                renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            }
         }
 
     }
