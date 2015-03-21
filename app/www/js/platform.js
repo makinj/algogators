@@ -13,8 +13,8 @@ var platform = (function(){
             controller.initialize();
             controller.startGame();
         });
-
     }
+    
     return {
         "initialize": initialize
     }
