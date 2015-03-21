@@ -12,7 +12,7 @@ var platform = (function(){
             ui.initialize();
 						renderer.drawBgImg();
 						renderer.drawButton(800,450,200,100, "Play!");
-						renderer.drawBanner(800,250,400,400);
+						renderer.drawBanner(800,200,400,300);
             /* //TODO sample scene- this should be removed
             scene.loadScene(
                 [

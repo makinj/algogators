@@ -52,7 +52,7 @@ var normalWebRenderer = (function(){
                 imgs['bg'] = bgImage;
 
                 var bannerImage = new Image();
-                bannerImage.src = "./img/banner.svg";
+                bannerImage.src = "./img/banner.png";
                 bannerImage.onload = function(){
                         markImageLoaded();
                 };
