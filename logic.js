@@ -1,8 +1,8 @@
-
 maxId = 0;
 maxColorId = 0;
 
-mainFoodChain= JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "family", "id": 5, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] } ]');
+mainFoodChain1 = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "family", "id": 5, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] } ]');
+mainFoodChain2 = JSON.parse('[ { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 } ], "foodChain": [ { "type": "egg", "id": 3, "colorId": 1 }, { "type": "family", "id": 4, "gators": [ { "type": "gator", "id": 6, "colorId": 2 }, { "type": "gator", "id": 7, "colorId": 3 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "family", "id": 5, "gators": [ { "type": "gator", "id": 9, "colorId": 4 }, { "type": "gator", "id": 10, "colorId": 5 } ], "foodChain": [ { "type": "egg", "id": 11, "colorId": 4 } ] } ] } ]');
 
 function getMaxIds(foodChain){
   for (var i = 0; i < foodChain.length; i++) {
@@ -45,19 +45,26 @@ function isEqual(foodChain1, foodChain2) {
 	if (foodChain1.length != foodChain2.length) return 0;
 	for (var i = 0; i < foodChain1.length; i++)
 		if (foodChain1[i].type != foodChain2[i].type) return 0;
-	var eggMap = {};
-	var gatorMap = {};
+	var eggMap1 = {};
+	var eggMap2 = {};
+	var gatorMap1 = {};
+	var gatorMap2 = {};
 	// Iterate over families and eggs (elements)
 	for (var i = 0; i < foodChain1.length; i++) {
 		var element1 = foodChain1[i];
 		var element2 = foodChain2[i];
 		if (element1.type == "egg") {
 			// if we already have a mapping for this color but it's different now, the food-chains are different
-			if (element1.colorId in eggMap && eggMap[element1.colorId] != element2.colorId)
+			if ((element1.colorId in eggMap1) && eggMap1[element1.colorId] != element2.colorId)
+				return 0;
+			if ((element2.colorId in eggMap2) && eggMap2[element2.colorId] != element1.colorId)
 				return 0;
 			// if we haven't seen this color yet, add this mapping
-			else if (!(element1 in eggMap))
-				eggMap[element1.colorId] = element2.colorId;
+			if (!(element1 in eggMap1))
+				eggMap1[element1.colorId] = element2.colorId;
+			if (!(element2 in eggMap2))
+				eggMap2[element2.colorId] = element1.colorId;
+			//console.log(eggMap);
 		}
 		else if (element1.type == "family") {
 			if (element1.gators.length != element2.gators.length) return 0;
@@ -65,14 +72,22 @@ function isEqual(foodChain1, foodChain2) {
 			// Iterate over gators
 			var gators1 = element1.gators;
 			var gators2 = element2.gators;
-			for (var i = 0; i < gators1.length(); i++) {
-			// if we already have a mapping for this color but it's different now, the food-chains are different
-			if (element1.colorId in eggMap && eggMap[element1.colorId] != element2.colorId)
-				if (gators1[i].colorId in gatorMap) && gatorMap[gators1[i].colorId] != gators2[i].colorId)
+			for (var i = 0; i < gators1.length; i++) {
+				console.log("1: ", gators1[i]);
+				console.log("2: ", gators2[i]);
+			}
+			for (var i = 0; i < gators1.length; i++) {
+				// if we already have a mapping for this color but it's different now, the food-chains are different
+				if ((gators1[i].colorId in gatorMap1) && gatorMap1[gators1[i].colorId] != gators2[i].colorId)
+					return 0;
+				if ((gators2[i].colorId in gatorMap2) && gatorMap2[gators2[i].colorId] != gators1[i].colorId)
 					return 0;
 				// if we haven't seen this color yet, add this mapping
-				else if (!(gators1[i] in gatorMap))
-					gatorMap[gators1[i].colorId] = gators2[i].colorId;
+				if (!(gators1[i] in gatorMap1))
+					gatorMap1[gators1[i].colorId] = gators2[i].colorId;
+				if (!(gators2[i] in gatorMap2))
+					gatorMap2[gators2[i].colorId] = gators1[i].colorId;
+				//console.log(gatorMap);
 			}
 			// Recurse for sub-foodChains
 			if (!isEqual(element1.foodChain, element2.foodChain)) return 0;
@@ -89,9 +104,10 @@ function replaceEggs(family, colorId, newFamily){
   }
 }
 
-getMaxIds(mainFoodChain);
-console.log(maxId);
-console.log(maxColorId);
+getMaxIds(mainFoodChain1);
+//console.log(maxId);
+//console.log(maxColorId);
+console.log(isEqual(mainFoodChain1, mainFoodChain2));
 
 /*
 family:
@@ -109,6 +125,5 @@ egg:
   type="egg"
   id
   colorId
-<<<<<<< HEAD
 
 */
