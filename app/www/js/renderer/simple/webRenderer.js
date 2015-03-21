@@ -62,12 +62,19 @@ var webRenderer = (function(){
             height:1
         };
     }
+    function getScreenSize(){
+        return {
+            width: window.innerWidth,
+            height:window.innerHeight
+        };
+    }
 
     return {
         "initialize": initialize,
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
         "getAlligatorSize": getAlligatorSize,
-        "getEggSize": getEggSize
+        "getEggSize": getEggSize,
+        "getScreenSize": getScreenSize
     };
 })();
