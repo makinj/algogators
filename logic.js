@@ -5,6 +5,8 @@ NOT = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colo
 
 AND = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 }, { "type": "egg", "id": 5, "colorId": 2 }, { "type": "family", "id": 6, "gators": [ { "type": "gator", "id": 7, "colorId": 3 }, { "type": "gator", "id": 8, "colorId": 4 } ], "foodChain": [ { "type": "egg", "id": 9, "colorId": 4 } ] } ] };
 
+OR = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 }, {"type": "family", "id": 5, "gators": [ { "type": "gator", "id": 6, "colorId": 3 }, { "type": "gator", "id": 7, "colorId": 4 } ], "foodChain": [ { "type": "egg", "id": 8, "colorId": 3 } ] }, { "type": "egg", "id": 9, "colorId": 2 }] };
+
 FALSE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 2 } ] };
 
 TRUE = { "type": "family", "id": 1, "gators": [ { "type": "gator", "id": 2, "colorId": 1 }, { "type": "gator", "id": 3, "colorId": 2 } ], "foodChain": [ { "type": "egg", "id": 4, "colorId": 1 } ] };
@@ -145,9 +147,9 @@ function copyFamily(family, colorMap){
 
 }
 
-getMaxIds([AND]);
+getMaxIds([OR]);
 
-mainFoodChain = [AND, copyFamily(FALSE), copyFamily(FALSE)];
+mainFoodChain = [OR, copyFamily(TRUE), copyFamily(TRUE)];
 
 console.log(JSON.stringify(mainFoodChain));
 reduce(mainFoodChain);
