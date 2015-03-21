@@ -18,7 +18,7 @@ var webRenderer = (function(){
         loadImages(imagesLoaded);
     }
 
-    function imagesLoaded(){
+    function onImagesLoaded(){
         assetsLoaded = true;
         console.log("Images loaded...");
     }
