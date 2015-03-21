@@ -3,7 +3,7 @@ var simplerScene = (function(){
     var initialX,initialY;
     var colors = ["#f00","#0f0","#00f","#ff0","#0ff","#f0f"];
     var margin = .1;
-
+    var elementArray = [];
     function initialize(){
         var windowSize = renderer.getScreenSize();
         initialX = windowSize.width;
@@ -38,14 +38,14 @@ var simplerScene = (function(){
             }
 
         } else if ( element.type == "gator" ){
-            fitAlligator(x,y,szx,szy,colors[element.colorId]);
+            fitAlligator(x,y,szx,szy,colors[element.colorId],element.id);
         } else if ( element.type == "egg" ){
-            fitEgg(x,y,szx,szy,colors[element.colorId]);
+            fitEgg(x,y,szx,szy,colors[element.colorId],element.id);
         }
 
     }
 
-    function fitAlligator(x,y,w,h,color){
+    function fitAlligator(x,y,w,h,color, id){
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
 
@@ -65,9 +65,10 @@ var simplerScene = (function(){
             x, y,
             aw, ah,
             color);
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
     }
 
-    function fitEgg(x,y,w,h,color){
+    function fitEgg(x,y,w,h,color,id){
 
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
@@ -85,11 +86,25 @@ var simplerScene = (function(){
         y = y + h/2 - ah/2
 
         renderer.drawEgg(x,y,aw,ah,color);
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
+
     }
 
+    function getIdAt(x,y){
+        for (var i = 0 ; i < elementArray.length ; i++){
+            var element = elementArray[i];
+            if (x >= element.topLeft.x && x <= element.bottomRight.x){
+                if (y >= element.topLeft.y && y <= element.bottomRight.y){
+                    return element.id;
+                }
+            }
+        }
+        return null;
+    }
 
     return {
         "initialize": initialize,
-        "drawScene": rootDrawScene
+        "drawScene": rootDrawScene,
+        "getIdAt": getIdAt
     };
 })();
