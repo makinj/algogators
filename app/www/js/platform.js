@@ -11,8 +11,8 @@ var platform = (function(){
             scene.initialize();
             ui.initialize();
 						renderer.drawBgImg();
-						renderer.drawButton(800,400,200,100, "Just the worst");
-						renderer.drawBanner(800,200,200,100);
+						renderer.drawButton(800,400,300,100, "Just the worst");
+						renderer.drawBanner(800,200,400,100);
             /* //TODO sample scene- this should be removed
             scene.loadScene(
                 [
