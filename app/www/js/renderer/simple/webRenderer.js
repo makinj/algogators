@@ -59,13 +59,15 @@ var webRenderer = (function(){
             context.setLineDash = function () {}
         }
         if (!assetsLoaded) return;
-        context.fillStyle = color;
         // Draw the square
         context.beginPath();
         context.setLineDash([5,2]);
         context.rect(x,y,width,height);
         context.stroke();
-        context.fill();
+        if (color){
+            context.fillStyle = color;
+            context.fill();
+        }
         context.closePath();
     }
 
