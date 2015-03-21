@@ -18,10 +18,43 @@
         <script type="text/javascript" src="./bower_components/jquery/dist/jquery.min.js"></script>
         <!-- <script type="text/javascript" src="js/index.js"></script> -->
         <script type='text/javascript' src='./js/renderer/simple/webRenderer.js'></script>
+        <script type='text/javascript' src='./js/scene/simpleScene.js'></script>
+
         <script type='text/javascript' src='./js/platform.js'></script>
         <script type="text/javascript">
             // app.initialize();
             platform.initialize("web");
+            simpleScene.initialize();
+            simpleScene.drawScene({
+              "maxId": 4,
+              "maxColor": 2,
+              "foodchain": [
+                {
+                  "type": "family",
+                  "id": 1,
+                  "gators": [
+                    {
+                      "type": "gator",
+                      "id": 2,
+                      "colorId": 1
+                    },
+                    {
+                      "type": "gator",
+                      "id": 3,
+                      "colorId": 2
+                    }
+                  ],
+                  "foodchain": [
+                    {
+                      "type": "egg",
+                      "id": 4,
+                      "colorId": 1
+                    }
+                  ]
+                }
+              ]
+            });
+
         </script>
     </body>
 </html>
