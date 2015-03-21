@@ -8,7 +8,7 @@ var simplerScene = (function(){
     var dragging = false;
     var currentElementId ;
     var currentElementIndex ;
-    var currentElementPos ;
+    var currentElement ;
 
     function initialize(){
         var windowSize = renderer.getScreenSize();
@@ -127,13 +127,19 @@ var simplerScene = (function(){
         }
     }
 
+    var currentElementOffset;
     function uiMouseDown(x,y){
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId){
             dragging = true;
             currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
-            currentElementPos = JSON.parse(JSON.stringify(elementArray[currentElementIndex]));
+            currentElement = JSON.parse(JSON.stringify(elementArray[currentElementIndex]));
+            currentElementOffset = {
+                x: x - currentElement.topLeft.x,
+                y: y - currentElement.topLeft.y
+            };
+
         }
 
     }
@@ -158,13 +164,13 @@ var simplerScene = (function(){
             hoverElementIndex = getObjectIndexAtId(hoverElement);
             var e = elementArray[hoverElementIndex];
 
-            currentElementPos.topLeft.x = x;
-            currentElementPos.topLeft.y = y;
-            currentElementPos.bottomRight.x = x+currentElementPos.size.x;
-            currentElementPos.bottomRight.y = y+currentElementPos.size.y;
+            currentElement.topLeft.x = x - currentElementOffset.x;
+            currentElement.topLeft.y = y - currentElementOffset.y;
+            currentElement.bottomRight.x = x+currentElement.size.x - currentElementOffset.x;
+            currentElement.bottomRight.y = y+currentElement.size.y - currentElementOffset.y;
             renderer.clear("#fff");
             drawElementArray();
-            drawSingleElement(currentElementPos);
+            drawSingleElement(currentElement);
             if (e){
                 renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
             }

@@ -117,6 +117,7 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+
     function getAlligatorSize(){
         return algSize;
     }

@@ -10,7 +10,6 @@ var platform = (function(){
         renderer.initialize(function(){
             scene.initialize();
             ui.initialize();
-
             // /* //TODO sample scene- this should be removed
             scene.drawScene(
                 [
