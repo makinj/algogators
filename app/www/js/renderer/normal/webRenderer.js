@@ -67,21 +67,32 @@ var webRenderer = (function(){
 
     function drawAlligator(x, y, width, height, color){
         if (!assetsLoaded) return;
-        // context.fillStyle = color;
-        // context.fillRect(x,y,width,height);
         context.drawImage(imgs["alg" + color.replace("#","")],
             x,y,width,height);
     }
 
     function drawEgg(x,y,width,height,color){
         if (!assetsLoaded) return;
-        // context.fillStyle = color;
-        // context.beginPath();
-        // context.arc(x + width/2,y + height/2,height/2,0,Math.PI*2);
-        // context.fill();
-        // context.closePath();
         context.drawImage(imgs["egg" + color.replace("#","")],
             x,y,width,height);
+    }
+
+    function drawDummy(x,y,width,height,color){
+        //Add a placeholder function for browsers that don't have setLineDash()
+        if (!context.setLineDash) {
+            context.setLineDash = function () {}
+        }
+        if (!assetsLoaded) return;
+        // Draw the square
+        context.beginPath();
+        context.setLineDash([5,2]);
+        context.rect(x,y,width,height);
+        context.stroke();
+        if (color){
+            context.fillStyle = color;
+            context.fill();
+        }
+        context.closePath();
     }
 
     function getAlligatorSize(){

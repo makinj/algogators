@@ -1,12 +1,14 @@
 var webRenderer = (function(){
 
+    var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
+
     var eApp, eCanvas;
 
     var context;
 
     var assetsLoaded = false;
 
-    function initialize(){
+    function initialize(onFinish){
         console.log("Initializing Renderer...");
         eApp = $(".app")[0];
         eCanvas = $("<canvas></canvas>")[0];
@@ -15,7 +17,10 @@ var webRenderer = (function(){
         $(eApp).append(eCanvas);
         context = eCanvas.getContext("2d");
         initCanvas();
-        loadImages(onImagesLoaded);
+        loadImages(function(){
+            onImagesLoaded();
+            onFinish();
+        });
     }
 
     function onImagesLoaded(){
@@ -98,6 +103,7 @@ var webRenderer = (function(){
         "drawDummy": drawDummy,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
-        "getScreenSize": getScreenSize
+        "getScreenSize": getScreenSize,
+        "colors": colors
     };
 })();
