@@ -43,43 +43,43 @@ var platform = (function(){
                 {
                   "type": "gator",
                   "id": 6,
-                  "colorId": 1
+                  "colorId": 3
                 },
                 {
                   "type": "gator",
                   "id": 7,
-                  "colorId": 2
+                  "colorId": 4
                 }
               ],
               "foodChain": [
                 {
                   "type": "egg",
                   "id": 8,
-                  "colorId": 1
-              },
-              {
-                "type": "family",
-                "id": 13,
-                "gators": [
-                  {
-                    "type": "gator",
-                    "id": 14,
-                    "colorId": 1
+                  "colorId": 4
                   },
                   {
-                    "type": "gator",
-                    "id": 15,
-                    "colorId": 2
-                  }
-                ],
-                "foodChain": [
-                  {
-                    "type": "egg",
-                    "id": 16,
-                    "colorId": 1
-                  }
-                ]
-            }
+                    "type": "family",
+                    "id": 13,
+                    "gators": [
+                      {
+                        "type": "gator",
+                        "id": 14,
+                        "colorId": 5
+                      },
+                      {
+                        "type": "gator",
+                        "id": 15,
+                        "colorId": 6
+                      }
+                    ],
+                    "foodChain": [
+                      {
+                        "type": "egg",
+                        "id": 16,
+                        "colorId": 5
+                      }
+                    ]
+                }
               ]
           },
           {
@@ -89,19 +89,19 @@ var platform = (function(){
               {
                 "type": "gator",
                 "id": 10,
-                "colorId": 1
+                "colorId": 2
               },
               {
                 "type": "gator",
                 "id": 11,
-                "colorId": 2
+                "colorId": 1
               }
             ],
             "foodChain": [
               {
                 "type": "egg",
                 "id": 12,
-                "colorId": 1
+                "colorId": 2
               }
             ]
         },
@@ -128,7 +128,7 @@ var platform = (function(){
 
             ]
         );
-        //*/
+        */
     }
 
     return {
