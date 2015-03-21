@@ -9,13 +9,104 @@ var platform = (function(){
         renderer.initialize();
         simpleScene.initialize();
         simpleScene.drawScene([
-              {
-
-                    "type": "egg",
-                    "id": 4,
-                    "colorId": 1
-                }
-            ]);
+    {
+                "type": "family",
+                "id": 1,
+                "gators": [
+                    {
+                        "type": "gator",
+                        "id": 2,
+                        "colorId": 1
+                    },
+                    {
+                        "type": "gator",
+                        "id": 3,
+                        "colorId": 2
+                    }
+                ],
+                "foodChain": [
+                    {
+                        "type": "egg",
+                        "id": 4,
+                        "colorId": 1
+                    },
+                    {
+                        "type": "egg",
+                        "id": 4,
+                        "colorId": 1
+                    }
+                ]
+            },
+            {
+                "type": "family",
+                "id": 1,
+                "gators": [
+                    {
+                        "type": "gator",
+                        "id": 2,
+                        "colorId": 1
+                    },
+                    {
+                        "type": "gator",
+                        "id": 3,
+                        "colorId": 2
+                    }
+                ],
+                "foodChain": [
+                    {
+                        "type": "egg",
+                        "id": 4,
+                        "colorId": 1
+                    }
+                ]
+            },
+            {
+                "type": "family",
+                "id": 1,
+                "gators": [
+                    {
+                        "type": "gator",
+                        "id": 2,
+                        "colorId": 1
+                    },
+                    {
+                        "type": "gator",
+                        "id": 3,
+                        "colorId": 2
+                    }
+                ],
+                "foodChain": [
+                    {
+                        "type": "egg",
+                        "id": 4,
+                        "colorId": 1
+                    }
+                ]
+            },
+            {
+                "type": "family",
+                "id": 1,
+                "gators": [
+                    {
+                        "type": "gator",
+                        "id": 2,
+                        "colorId": 1
+                    },
+                    {
+                        "type": "gator",
+                        "id": 3,
+                        "colorId": 2
+                    }
+                ],
+                "foodChain": [
+                    {
+                        "type": "egg",
+                        "id": 4,
+                        "colorId": 1
+                    }
+                ]
+            }
+        ]);
     }
 
     return {
