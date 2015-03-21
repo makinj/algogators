@@ -2,7 +2,11 @@ var webRenderer = (function(){
 
     var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
 
+    var imgs = {};
+
     var eApp, eCanvas;
+
+    var algSize, eggSize;
 
     var context;
 
@@ -29,9 +33,35 @@ var webRenderer = (function(){
     }
 
     function loadImages(onFinish){
-        // TODO actually load images
+
+        var totalImages = colors.length * 2;
+        var loadedImages = 0;
+        function markImageLoaded(){
+            loadedImages ++;
+            if (loadedImages == totalImages){
+                onFinish();
+            }
+        }
+
+        colors.forEach(function(color){
+            // Load the colored egg and alligator
+            var algImage = new Image();
+            algImage.src = "./img/alligators/gator" + color.replace("#","") + ".svg";
+            algImage.onload = function(){
+                if (!algSize) algSize = {width: algImage.width, height: algImage.height};
+                markImageLoaded();
+            };
+            imgs["alg" + color.replace("#","")] = algImage;
+
+            var eggImage = new Image();
+            eggImage.src = "./img/eggs/egg" + color.replace("#","") + ".svg";
+            eggImage.onload = function(){
+                if (!eggSize) eggSize = {width: eggImage.width, height: eggImage.height};
+                markImageLoaded();
+            };
+            imgs["egg" + color.replace("#","")] = eggImage;
+        });
         console.log("Loading images...");
-        onFinish();
     }
 
     function initCanvas(){
@@ -45,17 +75,14 @@ var webRenderer = (function(){
 
     function drawAlligator(x, y, width, height, color){
         if (!assetsLoaded) return;
-        context.fillStyle = color;
-        context.fillRect(x,y,width,height);
+        context.drawImage(imgs["alg" + color.replace("#","")],
+            x,y,width,height);
     }
 
     function drawEgg(x,y,width,height,color){
         if (!assetsLoaded) return;
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(x + width/2,y + height/2,height/2,0,Math.PI*2);
-        context.fill();
-        context.closePath();
+        context.drawImage(imgs["egg" + color.replace("#","")],
+            x,y,width,height);
     }
 
     function drawDummy(x,y,width,height,color){
@@ -90,17 +117,12 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+
     function getAlligatorSize(){
-        return {
-            width:2,
-            height:1
-        };
+        return algSize;
     }
     function getEggSize(){
-        return {
-            width:1,
-            height:1
-        };
+        return eggSize;
     }
     function getScreenSize(){
         return {

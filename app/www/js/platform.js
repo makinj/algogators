@@ -7,14 +7,14 @@ var platform = (function(){
         window.scene = simplerScene;
         window.ui = webUI;
 
-        renderer.initialize();
-        scene.initialize();
-        ui.initialize();
-        controller.initialize();
+        renderer.initialize(function(){
+            scene.initialize();
+            ui.initialize();
+            controller.initialize();
+            controller.startGame();
+        });
 
-        controller.startGame();
     }
-
     return {
         "initialize": initialize
     }
