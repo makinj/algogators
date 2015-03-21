@@ -1,4 +1,4 @@
-var webRenderer = (function(){
+var normalWebRenderer = (function(){
 
     var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
 
@@ -6,7 +6,7 @@ var webRenderer = (function(){
 
     var eApp, eCanvas;
 
-    var algSize, eggSize;
+    var algSize, eggSize, bgSize;
 
     var context;
 
@@ -42,7 +42,13 @@ var webRenderer = (function(){
                 onFinish();
             }
         }
-
+				
+				var bgImage = new Image();
+				bgImage.src = "./img/bg.png";
+				bgImage.onload = function(){
+						if (!bgSize) bgSize = {width: bgImage.width, height: bgImage.height};
+						markImageLoaded();
+				};
         colors.forEach(function(color){
             // Load the colored egg and alligator
             var algImage = new Image();
@@ -117,6 +123,32 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+		function drawBanner(x,y,width,height){
+        if (!assetsLoaded) return;
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs["egg009688"],ul_x,ul_y,width,height);
+		}
+
+		function drawBgImg(){
+				context.drawImage(imgs["logo.png"],0,0);
+		}
+
+    //x and y are center of button
+    function drawButton(x,y,width,height,text){
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.rect(ul_x, ul_y, width, height);
+        context.fillStyle = 'green'
+        context.fill();
+        context.lineWidth = 7;
+        context.strokeStyle = 'black';
+        context.stroke();
+        context.font = "30px Font";
+        context.fillStyle = 'yellow'
+        context.textAlign = 'center';
+				context.fillText(text, x, y);
+    }
 
     function getAlligatorSize(){
         return algSize;
@@ -141,6 +173,9 @@ var webRenderer = (function(){
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
-        "colors": colors
+        "colors": colors,
+				"drawBanner": drawBanner,
+				"drawBgImg": drawBgImg,
+				"drawButton": drawButton
     };
 })();

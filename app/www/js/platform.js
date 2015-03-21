@@ -3,14 +3,17 @@ var platform = (function(){
     // platformType: "web", "android", "ios"
     // platformVersion: nothing yet
     function initialize(platformType, platformVersion){
-        window.renderer = webRenderer;
+        window.renderer = normalWebRenderer;
         window.scene = simplerScene;
         window.ui = webUI;
 
         renderer.initialize(function(){
             scene.initialize();
             ui.initialize();
-            // /* //TODO sample scene- this should be removed
+						renderer.drawBgImg();
+						renderer.drawButton(800,400,200,100, "Just the worst");
+						renderer.drawBanner(800,200,200,100);
+            /* //TODO sample scene- this should be removed
             scene.loadScene(
                 [
                     {
