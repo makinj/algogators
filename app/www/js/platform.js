@@ -11,6 +11,16 @@ var platform = (function(){
             scene.initialize();
             ui.initialize();
 
+            /*
+            renderer.drawBgImg();
+            renderer.drawImgButton("next",1300, 350, 150, 300);
+            renderer.drawImgButton("back",300, 350, 150, 300);
+
+            renderer.drawButton(800,600,200,100, "Select");
+            renderer.drawButton(800,450,200,100, "Play!");
+            renderer.drawBanner(800,200,400,300);
+            */
+
             controller.initialize();
             controller.startGame();
 
