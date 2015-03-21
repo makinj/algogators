@@ -15,11 +15,12 @@ var simplerScene = (function(){
         for (var i =0;i<foodChain.length;i++){
             drawElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
         }
+        drawElementArray();
     }
 
     function drawElement(element, x, y, szx, szy){
 
-        if (element.type == "family"){
+        if (element.type == "family" || element.type == "dummyFamily"){
             var totalElements = element.gators.length + 1;
 
             // Box size for gators
@@ -60,23 +61,33 @@ var simplerScene = (function(){
             aw = ah * algSize.width / algSize.height;
         }
 
-        x = x + w/2 - aw/2
-        y = y + h/2 - ah/2
+        x = x + w/2 - aw/2 ;
+        y = y + h/2 - ah/2 ;
 
-        renderer.drawAlligator(
-            x, y,
-            aw, ah,
-            color);
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
+        // renderer.drawAlligator(
+        //     x, y,
+        //     aw, ah,
+        //     color);
+        console.log(color);
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator'});
     }
 
     function fitDummy(x,y,w,h,color, id){
 
-        renderer.drawDummy(
-            x, y,
-            w, h
-            );
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
+        var aw = w - w * margin * 2;
+        var ah = h - h * margin * 2;
+
+
+        x = x + w/2 - aw/2 ;
+        y = y + h/2 - ah/2 ;
+
+        // renderer.drawDummy(
+        //     x, y,
+        //     aw, ah
+        //     );
+
+
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy'});
     }
 
     function fitEgg(x,y,w,h,color,id){
@@ -96,9 +107,25 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2
         y = y + h/2 - ah/2
 
-        renderer.drawEgg(x,y,aw,ah,color);
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
+        // renderer.drawEgg(x,y,aw,ah,color);
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,   'color' : color,'type':'egg'});
 
+    }
+
+    function drawElementArray(){
+        // console.log(elementArray);
+        for (var i = 0 ; i < elementArray.length ; i++){
+            var e = elementArray[i];
+            console.log(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+
+            if          ( elementArray[i].type == "gator" ){
+                renderer.drawAlligator  (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            } else if   ( elementArray[i].type == "egg" ){
+                renderer.drawEgg        (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            } else if   ( elementArray[i].type == "dummy" ){
+                renderer.drawDummy      (e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            }
+        }
     }
 
     function getIdAt(x,y){
