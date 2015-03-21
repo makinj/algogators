@@ -20,7 +20,6 @@ var simpleScene=(function(){
     function calculateFamilySize(family){
         var gatorSize = 0;
         var foodChainSize = 0;
-        console.log(family);
 
         var currRelativeSize = 0;
         if (family.gators){
@@ -47,10 +46,13 @@ var simpleScene=(function(){
     function calculateElemSize(foodChain){
         var alligatorSize = 1;
         var foodChainWidth = 0;
+        var foodChainSize = 0;
+
         if (!foodChain){
             return 0;
         }
         for ( var i = 0 ; i < foodChain.length ; i++){
+            var element = foodChain[i];
             if (element.type == "egg"){
                 foodChainSize += eggBase;
             }
@@ -62,7 +64,14 @@ var simpleScene=(function(){
             }
         }
         var alligatorSize = screenSize.width * (1 - 2*border);
-        alligatorSize = alligatorSize / foodChainSize ;
+        console.log("foodChainSize");
+        console.log(foodChainSize);
+        console.log("screenSize");
+        console.log(alligatorSize);
+        alligatorSize = alligatorSize / (1/foodChainSize) ;
+        console.log("alligatorSize");
+        console.log(alligatorSize);
+
         return alligatorSize;
     }
 
@@ -97,34 +106,34 @@ var simpleScene=(function(){
     }
 
     function drawScene(foodChain){
-        var alligatorSize = screenSize.width * (1 - 2*border);
-        alligatorSize = alligatorSize / foodChainSize ;
-
         var currentWidth = screenSize.width * (1 - 2*border);
         var currentHeight = screenSize.height * (1 - 2*border);
+        var alligatorSize = calculateElemSize(foodChain);
 
         var currentY = screenSize.height * border;
-        var currentX = (screenSize.width * .5) - (alligatorSize * .5);
+        var currentX = ((screenSize.width * .5) - (alligatorSize * .5));
 
-        var alligatorSize = calculateElemSize(foodChain);
         if (foodChain){
+            console.log("TEST");
+            console.log(foodChain);
             for ( var i = 0 ; i < foodChain.length ; i++){
                 var element = foodChain[i];
                 if (element.type == "egg"){
                     renderer.drawEgg(currentX, currentY, eggBase * alligatorSize, eggBase * alligatorSize * eggRatio, getColor(element.colorID));
+                    console.log(element);
+                    console.log(currentX, currentY, eggBase * alligatorSize, eggBase * alligatorSize * eggRatio, getColor(element.colorID));
                 }
                 else{
                     var newX = calculateFamilySize(element) * alligatorSize + currentX;
-                    placeFamily(element, alligatorSize * childShrink, {'x': currentX, 'y': currentY}, {'x': newX, 'y': bottomRight.y});
+                    placeFamily(element, alligatorSize * childShrink, {'x': currentX, 'y': currentY}, {'x': newX, 'y': (screenSize.height - screenSize.height * border)});
                     currentX = newX + alligatorSize * spacer;
                 }
             }
-            placeFamily(family, alligatorSize, topLeft, bottomRight)
         }
     }
 
     function getColor(colorID){
-        return '#77777';
+        return '#f00';
     }
 
     return {
