@@ -467,7 +467,7 @@ var interpreter = (function(){
     for(var i=0;i<inputs.length;i++){
       mainFoodChain[mainFoodChain.length]=copyFamily(inputs[i]);
     }
-    steps = [];
+    steps = [{"state":mainFoodChain, "events":[]}];
     step = reduce(mainFoodChain);
     while(step!=0 && steps.length<100){
       steps[steps.length]=step;
