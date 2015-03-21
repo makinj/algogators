@@ -62,10 +62,12 @@ function isEqual(foodChain1, foodChain2) {
 		var element1 = foodChain1[i];
 		var element2 = foodChain2[i];
 		if (element1.type == "egg") {
-			if (element1.colorid in eggMap && eggMap[element1.colorid] != element2.colorid)
+			// if we already have a mapping for this color but it's different now, the food-chains are different
+			if (element1.colorId in eggMap && eggMap[element1.colorId] != element2.colorId)
 				return 0;
+			// if we haven't seen this color yet, add this mapping
 			else if (!(element1 in eggMap))
-				eggMap[element1.colorid] = element2.colorid;
+				eggMap[element1.colorId] = element2.colorId;
 		}
 		else if (element1.type == "family") {
 			if (element1.gators.length != element2.gators.length) return 0;
@@ -74,10 +76,13 @@ function isEqual(foodChain1, foodChain2) {
 			var gators1 = element1.gators;
 			var gators2 = element2.gators;
 			for (var i = 0; i < gators1.length(); i++) {
-				if (gators1[i].colorid in gatorMap) && gatorMap[gators1[i].colorid] != gators2[i].colorid)
+			// if we already have a mapping for this color but it's different now, the food-chains are different
+			if (element1.colorId in eggMap && eggMap[element1.colorId] != element2.colorId)
+				if (gators1[i].colorId in gatorMap) && gatorMap[gators1[i].colorId] != gators2[i].colorId)
 					return 0;
+				// if we haven't seen this color yet, add this mapping
 				else if (!(gators1[i] in gatorMap))
-					gatorMap[gators1[i].colorid] = gators2[i].colorid;
+					gatorMap[gators1[i].colorId] = gators2[i].colorId;
 			}
 			// Recurse for sub-foodChains
 			if (!isEqual(element1.foodChain, element2.foodChain)) return 0;
