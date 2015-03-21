@@ -138,7 +138,7 @@ function copyFamily(family, colorMap){
   return newFamily;
 
 }
-/*
+
 getMaxIds(mainFoodChain1);
 
 
@@ -162,7 +162,6 @@ console.log(JSON.stringify(mainFoodChain1));
 
 
 console.log(maxColorId);
-*/
 console.log(isEqual(mainFoodChain1, mainFoodChain2));
 
 /*
