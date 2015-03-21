@@ -20,12 +20,12 @@ var simplerScene = (function(){
 
     function rootDrawScene(foodChain){
         for (var i =0;i<foodChain.length;i++){
-            saveElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
+            addElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
         }
         drawElementArray();
     }
 
-    function saveElement(element, x, y, szx, szy){
+    function addElement(element, x, y, szx, szy){
 
         if (element.type == "family" || element.type == "dummyFamily"){
             var totalElements = element.gators.length + 1;
@@ -35,27 +35,27 @@ var simplerScene = (function(){
             var bxy = szy / totalElements;
 
             for (var i = 0;i < element.gators.length;i++){
-                saveElement(element.gators[i], x, y + bxy * i, bxx, bxy);
+                addElement(element.gators[i], x, y + bxy * i, bxx, bxy);
             }
 
             // Box size for foodChain
             bxx = szx / element.foodChain.length;
 
             for (var i = 0;i < element.foodChain.length;i++){
-                saveElement(element.foodChain[i], x + bxx * i, y + bxy * (totalElements - 1), bxx, bxy);
+                addElement(element.foodChain[i], x + bxx * i, y + bxy * (totalElements - 1), bxx, bxy);
             }
 
         } else if ( element.type == "gator" ){
-            fitAlligator(x,y,szx,szy,colors[element.colorId],element.id);
+            addAlligator(x,y,szx,szy,colors[element.colorId],element.id);
         } else if ( element.type == "egg" ){
-            fitEgg(x,y,szx,szy,colors[element.colorId],element.id);
+            addEgg(x,y,szx,szy,colors[element.colorId],element.id);
         }else if ( element.type == "dummy" ){
-            fitDummy(x,y,szx,szy,colors[element.colorId],element.id);
+            addDummy(x,y,szx,szy,colors[element.colorId],element.id);
         }
 
     }
 
-    function fitAlligator(x,y,w,h,color, id){
+    function addAlligator(x,y,w,h,color, id){
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
 
@@ -74,7 +74,7 @@ var simplerScene = (function(){
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator'});
     }
 
-    function fitDummy(x,y,w,h,color, id){
+    function addDummy(x,y,w,h,color, id){
 
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
@@ -85,7 +85,7 @@ var simplerScene = (function(){
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy'});
     }
 
-    function fitEgg(x,y,w,h,color,id){
+    function addEgg(x,y,w,h,color,id){
 
         var aw = w - w * margin * 2;
         var ah = h - h * margin * 2;
@@ -202,7 +202,7 @@ var simplerScene = (function(){
 
     return {
         "initialize": initialize,
-        "drawScene": rootDrawScene,
+        "loadScene": rootDrawScene,
         "getIdAt": getIdAt,
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
