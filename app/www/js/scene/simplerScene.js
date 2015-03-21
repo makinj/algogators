@@ -41,6 +41,8 @@ var simplerScene = (function(){
             fitAlligator(x,y,szx,szy,colors[element.colorId],element.id);
         } else if ( element.type == "egg" ){
             fitEgg(x,y,szx,szy,colors[element.colorId],element.id);
+        }else if ( element.type == "dummy" ){
+            fitDummy(x,y,szx,szy,colors[element.colorId],element.id);
         }
 
     }
@@ -65,6 +67,15 @@ var simplerScene = (function(){
             x, y,
             aw, ah,
             color);
+        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
+    }
+
+    function fitDummy(x,y,w,h,color, id){
+
+        renderer.drawDummy(
+            x, y,
+            w, h
+            );
         elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'id': id});
     }
 

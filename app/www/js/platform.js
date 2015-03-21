@@ -18,7 +18,7 @@ var platform = (function(){
                 "id": 1,
                 "gators": [
                   {
-                    "type": "gator",
+                    "type": "dummy",
                     "id": 2,
                     "colorId": 1
                   },
@@ -104,10 +104,14 @@ var platform = (function(){
                 "colorId": 1
               }
             ]
-          }
+        },
+        {
+            "type": "dummy",
+            "id": 16,
+        }
             ]
         );
-        */
+        //*/
     }
 
     return {

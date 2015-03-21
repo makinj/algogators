@@ -53,6 +53,24 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+    function drawDummy(x,y,width,height,color){
+        //Add a placeholder function for browsers that don't have setLineDash()
+        if (!context.setLineDash) {
+            context.setLineDash = function () {}
+        }
+        if (!assetsLoaded) return;
+        // Draw the square
+        context.beginPath();
+        context.setLineDash([5,2]);
+        context.rect(x,y,width,height);
+        context.stroke();
+        if (color){
+            context.fillStyle = color;
+            context.fill();
+        }
+        context.closePath();
+    }
+
     function getAlligatorSize(){
         return {
             width:2,
@@ -77,6 +95,7 @@ var webRenderer = (function(){
         "clear": clearCanvas,
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
+        "drawDummy": drawDummy,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize
