@@ -210,9 +210,17 @@ var normalWebRenderer = (function(){
         context.drawImage(imgs["egg009688"],ul_x,ul_y,width,height);
     }
 
-    function drawBgImg(){
-        context.drawImage(imgs["bg"],0,0);
-    }
+	function drawBanner(width,height){
+        if (!assetsLoaded) return;
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs["logo"],ul_x,ul_y,width,height);
+	}
+
+	function drawBgImg(){
+            screenSize = getScreenSize();
+   			context.drawImage(imgs["bg"],0,0,screenSize.width, screenSize.height);
+	}
 
     //x and y are center of button
     function drawButton(x,y,width,height,text){
