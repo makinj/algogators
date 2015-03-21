@@ -47,7 +47,10 @@ var webRenderer = (function(){
     function drawEgg(x,y,width,height,color){
         if (!assetsLoaded) return;
         context.fillStyle = color;
-        context.fillRect(x,y,width,height);
+        context.beginPath();
+        context.arc(x + width/2,y + height/2,height/2,0,Math.PI*2);
+        context.fill();
+        context.closePath();
     }
 
     function getAlligatorSize(){
@@ -71,6 +74,7 @@ var webRenderer = (function(){
 
     return {
         "initialize": initialize,
+        "clear": clearCanvas,
         "drawEgg": drawEgg,
         "drawAlligator": drawAlligator,
         "getAlligatorSize": getAlligatorSize,
