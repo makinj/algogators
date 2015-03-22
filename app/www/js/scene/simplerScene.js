@@ -33,6 +33,7 @@ var simplerScene = (function(){
 
     var animation = false;
     function initialize(){
+        renderSuccess = false
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
         elementArray = [];
@@ -85,6 +86,7 @@ var simplerScene = (function(){
         }
 
     function loadUIElements(foodChain){
+        renderSuccess = false;
         colorElements = [];
         var highestColor = controller.getHighestColor(foodChain);
         var boxWidth = colorPanelWidth / highestColor;
@@ -104,6 +106,7 @@ var simplerScene = (function(){
     }
 
     function loadFoodChain(foodChain, testFoodChains){
+        renderSuccess = false;
         numTestCase = testFoodChains.length;
         elementArray = [];
         for (var i =0;i<foodChain.length;i++){
@@ -396,11 +399,11 @@ var simplerScene = (function(){
         }
         if (!anyFalse){
             renderSuccess = true;
-            setTimeout(function(){
-                deactivate();
-                menu.activate();
-                menu.openChallengeMenu();
-            },1000);
+            // setTimeout(function(){
+            //     deactivate();
+            //     menu.activate();
+            //     menu.openChallengeMenu();
+            // },1000);
         }
         //     if (i < arrowArray.length){
         //         for (var a = 0 ; a < elementArray.length ; a++){
