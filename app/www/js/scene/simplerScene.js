@@ -99,6 +99,11 @@ var simplerScene = (function(){
                     ioPanel.openX + ioPanel.width/3*2 + i * (ioPanel.width/output.length/2),ioPanel.y+ (ioPanel.height / testFoodChains.length) * u,
                     (ioPanel.width/output.length/3), ioPanel.height / testFoodChains.length, false);
             }
+            addElement({
+                "type": "rightArrow",
+                "id": Math.floor(Math.random() * 9999999)
+            }, ioPanel.openX + ioPanel.width/3, ioPanel.y + (ioPanel.height / testFoodChains.length) * u,
+               ioPanel.width/3, ioPanel.height/testFoodChains.length, false);
         }
         loadUIElements(foodChain);
         addDraggys();
@@ -193,6 +198,24 @@ var simplerScene = (function(){
                 type: element.type,
                 draggable: true
             });
+        }else if (element.type == "rightArrow"){
+            elementArray.push({
+                topLeft:{
+                    x: x,
+                    y: y
+                },
+                bottomRight:{
+                    x: x + szx,
+                    y: y + szy
+                },
+                size:{
+                    x:szx,
+                    y:szy
+                },
+                id: element.id,
+                type: element.type,
+                draggable: draggable
+            });
         }
 
     }
@@ -271,6 +294,8 @@ var simplerScene = (function(){
             renderer.drawDummy(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y,e.color);
         } else if ( e.type == "trash"){
             renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
+        } else if ( e.type == "rightArrow" ){
+            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         }
     }
 

@@ -152,6 +152,30 @@ var webRenderer = (function(){
         context.fillRect(x-23, y+10, 6, 25);
         context.fillRect(x-35, y+5, 30, 6);
     }
+    function drawRightArrow(x,y,rw,rh,good){
+        var w,h;
+        if (rw > rh){
+            w = rh;
+            h = rh;
+            x += (rw-w)/2;
+        }else if (rh > rw){
+            h = rw;
+            w = rw;
+            y += (rh-h)/2;
+        }
+
+        context.fillStyle = good ? "#cfc" : "#fcc";
+        context.beginPath();
+        context.moveTo(x,y+h*.2);
+        context.lineTo(x+w-w*.5,y+h*.2);
+        context.lineTo(x+w-w*.5,y);
+        context.lineTo(x+w,y + h/2);
+        context.lineTo(x+w-w*.5,y+h);
+        context.lineTo(x+w-w*.5,y+h-h*.2);
+        context.lineTo(x,y+h-h*.2);
+        context.fill();
+        context.closePath();
+    }
     function drawPlus(x,y,w,h){
         context.fillStyle = "#ddd";
         context.fillRect(x, y + h/3, w, h/3);
@@ -191,6 +215,7 @@ var webRenderer = (function(){
         "drawSelectionPanel": drawSelectionPanel,
         "drawPlus": drawPlus,
         "drawTrash": drawTrash,
+        "drawRightArrow": drawRightArrow,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
