@@ -348,7 +348,10 @@ var interpreter = (function(){
       step.events[0]={"action":"eat"}
       step.events[0].gator = gator.id;
       step.events[0].food = food.id;
-      step.events = step.events.concat(replaceEggs(foodChain[0], gator.colorId, food));
+      foodColors = {}
+      getFamilyColors(food, foodColors);
+
+      step.events = step.events.concat(replaceEggs(foodChain[0], gator.colorId, food, foodColors));
       foodChain.splice(1, 1);//removes the food
       foodChain[0].gators.splice(0,1);//removes the gator
     }else{//eta reduce
@@ -416,20 +419,45 @@ var interpreter = (function(){
   }
 
 
-  function replaceEggs(family, colorId, newFamily){
+  function replaceEggs(family, colorId, newFamily, foodColors, colorMap){
+    colorMap = colorMap || {};
+    colorMap = JSON.parse(JSON.stringify(colorMap));
+
     events = [];
+
+    for(var i=0;i<family.gators.length;i++){
+      if(family.gators[i].colorId in foodColors && !(family.gators[i].colorId in colorMap)){
+        newColorId = nextColorId();
+        colorIds[family.gators[i].colorId] = newColorId;
+      }
+    }
+
     for (var i = 0; i < family.foodChain.length; i++) {
       if(family.foodChain[i].type=="family"){
-        events = events.concat(replaceEggs(family.foodChain[i], colorId, newFamily));
+        events = events.concat(replaceEggs(family.foodChain[i], colorId, newFamily, colorMap));
       }else{
         if(family.foodChain[i].colorId==colorId){
           events[events.length]={"action":"hatch", "egg":family.foodChain[i].id};
-          family.foodChain[i] = copyFamily(newFamily, {});
+          family.foodChain[i] = copyFamily(newFamily, colorMap);
           events[events.length-1].family = family.foodChain[i].id
         }
       }
     }
     return events;
+  }
+
+  function getFamilyColors(family, familyColorIds){
+    for(var i = 0;i<family.gators.length;i++){
+      familyColorIds[family.gators[i].colorId]=1;
+    }
+    for(var i = 0;i<family.foodChain.length;i++){
+      if(family.foodChain[i].type=="family"){
+        getFamilyColors(family.foodChain[i], familyColorIds);
+      }else{
+        familyColorIds[family.foodChain[i].colorId]=1;
+      }
+    }
+    return
   }
 
   function copyFamily(family, colorMap){
@@ -444,7 +472,6 @@ var interpreter = (function(){
         newFamily.gators[i].colorId=family.gators[i].colorId
       }
     }
-
 
     for (var i=0; i < family.foodChain.length; i++){
       if(family.foodChain[i].type=="family"){
