@@ -11,6 +11,11 @@ var simplerScene = (function(){
     var colors;
     var margin = .1;
     var elementArray = [];
+    var arrowArray = [];
+    var runResults = [0,0,0,0,0,0,0,0,0,0];
+    var numTestCase = 0;
+    var arrowHit = 0;
+
     var colorElements = [];
     var currentColor;
     var plusElement;
@@ -22,9 +27,11 @@ var simplerScene = (function(){
     var currentElementIndex ;
     var currentElement;
 
+    var renderSuccess = false;
     var renderNextFrame;
     var active = false;
 
+    var animation = false;
     function initialize(){
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
@@ -69,6 +76,8 @@ var simplerScene = (function(){
                 animateIOPanel();
                 if (renderNextFrame){
                     render();
+                    animateController.nextframe();
+                    animatedScene.render();
                     renderNextFrame = false;
                 }
             }
@@ -95,6 +104,7 @@ var simplerScene = (function(){
     }
 
     function loadFoodChain(foodChain, testFoodChains){
+        numTestCase = testFoodChains.length;
         elementArray = [];
         for (var i =0;i<foodChain.length;i++){
             addElement(foodChain[i], expWindowX + i * (expWindowWidth/foodChain.length),expWindowY,(expWindowWidth/foodChain.length), expWindowHeight);
@@ -114,7 +124,8 @@ var simplerScene = (function(){
             }
             addElement({
                 "type": "rightArrow",
-                "id": Math.floor(Math.random() * 9999999)
+                "id": Math.floor(Math.random() * 9999999),
+                "valid" : false
             }, ioPanel.openX + ioPanel.width/3, ioPanel.y + (ioPanel.height / testFoodChains.length) * u,
                ioPanel.width/3, ioPanel.height/testFoodChains.length, false);
         }
@@ -152,9 +163,14 @@ var simplerScene = (function(){
             }
 
         }
+
+        if (renderSuccess){
+            renderer.drawSuccess(0,0,renderer.getScreenSize().width,renderer.getScreenSize().height);
+        }
     }
 
     function drawIOPanelElements(){
+        arrowHit = 0;
         for (var i = 0 ; i < elementArray.length ; i++){
             if (!elementArray[i].draggable){
                 //TODO remove, this is really bad
@@ -223,7 +239,7 @@ var simplerScene = (function(){
             });
         }
         else if (element.type == "rightArrow"){
-            elementArray.push({
+            var arrayAddition = {
                 topLeft:{
                     x: x,
                     y: y
@@ -238,8 +254,11 @@ var simplerScene = (function(){
                 },
                 id: element.id,
                 type: element.type,
+                valid: element.valid,
                 draggable: draggable
-            });
+            };
+            elementArray.push(arrayAddition);
+            arrowArray.push(arrayAddition);
         }
 
     }
@@ -342,7 +361,8 @@ var simplerScene = (function(){
         } else if ( e.type == "trash"){
             renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         } else if ( e.type == "rightArrow" ){
-            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y, false);
+            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y, runResults[arrowHit]);
+            arrowHit ++;
         }
     }
 
@@ -364,12 +384,55 @@ var simplerScene = (function(){
     function openIOPanel(){
         if (ioPanel.open) return;
         ioPanel.open = true;
+
+        var results = controller.runTests();
+        runResults = results;
+        var anyFalse = false;
+        for (var i = 0; i < results.length ; i++){
+            if (!results[i]){
+                anyFalse = true;
+            }
+            arrowArray[i].valid = results[i] == 1;
+        }
+        if (!anyFalse){
+            renderSuccess = true;
+            setTimeout(function(){
+                deactivate();
+                menu.activate();
+                menu.openChallengeMenu();
+            },1000);
+        }
+        //     if (i < arrowArray.length){
+        //         for (var a = 0 ; a < elementArray.length ; a++){
+        //
+        //             if (elementArray[a].id == arrowArray[i]){
+        //                 elementArray[a].valid = results[i];
+        //             }
+        //         }
+        //     }
+        // }
+
     }
 
     var currentElementOffset;
     function uiMouseDown(x,y){
 
+        if (animation){
+            animation = false;
+            controller.stopAnimation();
+            return;
+        }
         if (ioPanel.open && x > ioPanel.x){
+            console.log(x,y,ioPanel.x,ioPanel.y,ioPanel.width, ioPanel.height);
+            var split = 1 / numTestCase ;
+            for (var i = 0 ; i < numTestCase ; i++){
+                if (y > ioPanel.y + ioPanel.height*split*i){
+                    controller.startAnimation(i, expWindowHeight, expWindowWidth+50, expWindowX,expWindowY );
+                    animation = true;
+                    return;
+                }
+            }
+
             return;
         }else if (!ioPanel.open && x > ioPanel.x - 40&&
                   y < ioPanel.y + 40){
@@ -468,6 +531,9 @@ var simplerScene = (function(){
     }
 
     function uiMouseUp(x,y){
+        if (animation){
+            return;
+        }
         var selectedElementId = getIdAt(x,y);
         if (currentElementId == "DRAGGY_GATOR"){
             dragging = false;
@@ -498,6 +564,9 @@ var simplerScene = (function(){
     }
 
     function uiMouseMove(x,y){
+        if (animation){
+            return;
+        }
         if (dragging){
             hoverElement = getIdAt(x,y);
 
@@ -549,6 +618,7 @@ var simplerScene = (function(){
         "loadScene": loadFoodChain,
         "getIdAt": getIdAt,
         "redraw": render,
+        "render": render,
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
         "uiMouseMove": uiMouseMove,

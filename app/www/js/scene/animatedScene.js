@@ -222,7 +222,12 @@ var animatedScene = (function(){
     }
 
     function render(){
-        drawElementArray();
+        if (elementArray.length > 0){
+
+            renderer.drawColorPanel(topLeft.x, topLeft.y,initialX,initialY, '#f00');
+            renderer.drawSelectionPanel(topLeft.x, topLeft.y,initialX,initialY);
+            drawElementArray();
+        }
 
     }
 

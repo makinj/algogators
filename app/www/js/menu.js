@@ -195,6 +195,7 @@ var menu = (function(){
         deactivate: deactivate,
         isActive: function(){return active},
         openMainMenu: openMainMenu,
+        openChallengeMenu: openChallengeMenu,
         initialize: initialize,
         uiMouseUp: uiMouseUp,
         uiMouseDown: uiMouseDown,
