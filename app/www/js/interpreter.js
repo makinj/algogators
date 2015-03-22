@@ -508,9 +508,16 @@ var interpreter = (function(){
     return events;
   }
 
-  function getFamilyColors(family, familyColorIds){
-    for(var i = 0;i<family.gators.length;i++){
-      familyColorIds[family.gators[i].colorId]=1;
+  function copyFamily(family, colorMap){
+    colorMap = colorMap || {};
+    newFamily = {type:"family", id:++maxId, gators:[], foodChain:[]};//create blank family with new Id
+    if (family && family.gators){
+        for (var i=0; i < family.gators.length; i++){//add each gator over with new Id's and new color Id's
+          colorId = nextColorId();
+          colorIds[colorId]=1;
+          newFamily.gators[i]={type:"gator", id:++maxId, colorId:colorId};
+          colorMap[family.gators[i].colorId]=colorId;//mark that this colorId is changed for all children eggs
+        }
     }
     for(var i = 0;i<family.foodChain.length;i++){
       if(family.foodChain[i].type=="family"){
@@ -596,6 +603,11 @@ var interpreter = (function(){
     return results;
   }
 
+  function getTestCase(testName){
+      test = tests[testName];
+      return test;
+  }
+
   return {
     "refreshIds":refreshIds,
     "reduce":reduce,
@@ -603,7 +615,8 @@ var interpreter = (function(){
     "replaceEggs":replaceEggs,
     "copyFamily":copyFamily,
     "fullyReduce":fullyReduce,
-    "test": test
+    "test": test,
+    "getTestCase":getTestCase
   };
 })();
 

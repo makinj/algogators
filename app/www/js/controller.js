@@ -1,7 +1,7 @@
 var controller = (function(){
 
     var data, testData;
-
+    var testName;
     function initialize(){
         data = [
             {
@@ -21,71 +21,12 @@ var controller = (function(){
                 ]
             }
         ];
-        testData = [
-            {
-                input: [{
-                    "type": "egg",
-                    "id": 8,
-                    "colorId": 4
-                }],
-                output: [{
-                    "type": "egg",
-                    "id": 8,
-                    "colorId": 4
-                }]
-            },
-            {
-                input: [{
-                    "type": "family",
-                    "id": 9,
-                    "gators": [
-                        {
-                            "type": "gator",
-                            "id": 10,
-                            "colorId": 5
-                        },
-                        {
-                            "type": "gator",
-                            "id": 11,
-                            "colorId": 6
-                        }
-                    ],
-                    "foodChain": [
-                        {
-                            "type": "egg",
-                            "id": 12,
-                            "colorId": 5
-                        }
-                    ]
-                }],
-                output: [{
-                    "type": "family",
-                    "id": 9,
-                    "gators": [
-                        {
-                            "type": "gator",
-                            "id": 10,
-                            "colorId": 5
-                        },
-                        {
-                            "type": "gator",
-                            "id": 11,
-                            "colorId": 6
-                        }
-                    ],
-                    "foodChain": [
-                        {
-                            "type": "egg",
-                            "id": 12,
-                            "colorId": 5
-                        }
-                    ]
-                }]
-            },
-        ];
+
     }
 
     function startGame(challengeName){
+        testName = challengeName;
+        testData = interpreter.getTestCase(testName.toLowerCase());
         scene.activate();
         scene.loadScene(data,testData);
     }
@@ -183,15 +124,15 @@ var controller = (function(){
         }
     }
 
-    function removeDummies(data){
-        data = JSON.parse(JSON.stringify(data));
-        traverseChild(getDataAsFamily(data), function(child,parent,index){
+    function removeDummies(newData){
+        traverseChild(getDataAsFamily(newData), function(child,parent,index){
             if (child.type == "dummy"){
                 parent.splice(index,1)
-                removeDummies(data);
+                removeDummies(newData);
                 return true;
             }
         });
+        return newData;
     }
 
     function getHighestColor(foodChain){
@@ -220,6 +161,16 @@ var controller = (function(){
         menu.openMainMenu();
     }
 
+    function runTests(){
+        newData = JSON.parse(JSON.stringify(data));
+        var results = interpreter.test(removeDummies(newData),testName.toLowerCase());
+        var passing = [];
+        for (var i = 0 ; i < results.length ; i++){
+            passing.push(results[i].passed);
+        }
+        return passing;
+    }
+
     return {
         "initialize": initialize,
         "swapElements": swapElements,
@@ -230,6 +181,7 @@ var controller = (function(){
         "getHighestColor": getHighestColor,
         "removeDummies": removeDummies,
         "startGame": startGame,
-        "openMainMenu": openMainMenu
+        "openMainMenu": openMainMenu,
+        "runTests": runTests
     };
 })();

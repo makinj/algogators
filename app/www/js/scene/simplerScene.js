@@ -11,6 +11,10 @@ var simplerScene = (function(){
     var colors;
     var margin = .1;
     var elementArray = [];
+    var arrowArray = [];
+    var runResults = [0,0,0,0,0,0,0,0,0,0];
+    var arrowHit = 0;
+
     var colorElements = [];
     var currentColor;
     var plusElement;
@@ -114,7 +118,8 @@ var simplerScene = (function(){
             }
             addElement({
                 "type": "rightArrow",
-                "id": Math.floor(Math.random() * 9999999)
+                "id": Math.floor(Math.random() * 9999999),
+                "valid" : false
             }, ioPanel.openX + ioPanel.width/3, ioPanel.y + (ioPanel.height / testFoodChains.length) * u,
                ioPanel.width/3, ioPanel.height/testFoodChains.length, false);
         }
@@ -152,6 +157,7 @@ var simplerScene = (function(){
     }
 
     function drawIOPanelElements(){
+        arrowHit = 0;
         for (var i = 0 ; i < elementArray.length ; i++){
             if (!elementArray[i].draggable){
                 //TODO remove, this is really bad
@@ -220,7 +226,7 @@ var simplerScene = (function(){
             });
         }
         else if (element.type == "rightArrow"){
-            elementArray.push({
+            var arrayAddition = {
                 topLeft:{
                     x: x,
                     y: y
@@ -235,8 +241,11 @@ var simplerScene = (function(){
                 },
                 id: element.id,
                 type: element.type,
+                valid: element.valid,
                 draggable: draggable
-            });
+            };
+            elementArray.push(arrayAddition);
+            arrowArray.push(arrayAddition);
         }
 
     }
@@ -339,7 +348,8 @@ var simplerScene = (function(){
         } else if ( e.type == "trash"){
             renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         } else if ( e.type == "rightArrow" ){
-            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
+            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y, runResults[arrowHit]);
+            arrowHit ++;
         }
     }
 
@@ -361,6 +371,22 @@ var simplerScene = (function(){
     function openIOPanel(){
         if (ioPanel.open) return;
         ioPanel.open = true;
+
+        var results = controller.runTests();
+        runResults = results;
+        for (var i = 0; i < results.length ; i++){
+            arrowArray[i].valid = results[i] == 1;
+        }
+        //     if (i < arrowArray.length){
+        //         for (var a = 0 ; a < elementArray.length ; a++){
+        //
+        //             if (elementArray[a].id == arrowArray[i]){
+        //                 elementArray[a].valid = results[i];
+        //             }
+        //         }
+        //     }
+        // }
+
     }
 
     var currentElementOffset;
