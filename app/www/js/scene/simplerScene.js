@@ -31,6 +31,7 @@ var simplerScene = (function(){
     var renderNextFrame;
     var active = false;
 
+    var animation = false;
     function initialize(){
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
@@ -75,6 +76,8 @@ var simplerScene = (function(){
                 animateIOPanel();
                 if (renderNextFrame){
                     render();
+                    animateController.nextframe();
+                    animatedScene.render();
                     renderNextFrame = false;
                 }
             }
@@ -414,12 +417,19 @@ var simplerScene = (function(){
     var currentElementOffset;
     function uiMouseDown(x,y){
 
+        if (animation){
+            animation = false;
+            controller.stopAnimation();
+            return;
+        }
         if (ioPanel.open && x > ioPanel.x){
             console.log(x,y,ioPanel.x,ioPanel.y,ioPanel.width, ioPanel.height);
             var split = 1 / numTestCase ;
             for (var i = 0 ; i < numTestCase ; i++){
                 if (y > ioPanel.y + ioPanel.height*split*i){
-                    controller.startAnimation(i, expWindowHeight, expWindowWidth, expWindowX,expWindowY );
+                    controller.startAnimation(i, expWindowHeight, expWindowWidth+50, expWindowX,expWindowY );
+                    animation = true;
+                    return;
                 }
             }
 
@@ -521,6 +531,9 @@ var simplerScene = (function(){
     }
 
     function uiMouseUp(x,y){
+        if (animation){
+            return;
+        }
         var selectedElementId = getIdAt(x,y);
         if (currentElementId == "DRAGGY_GATOR"){
             dragging = false;
@@ -551,6 +564,9 @@ var simplerScene = (function(){
     }
 
     function uiMouseMove(x,y){
+        if (animation){
+            return;
+        }
         if (dragging){
             hoverElement = getIdAt(x,y);
 
@@ -602,6 +618,7 @@ var simplerScene = (function(){
         "loadScene": loadFoodChain,
         "getIdAt": getIdAt,
         "redraw": render,
+        "render": render,
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
         "uiMouseMove": uiMouseMove,

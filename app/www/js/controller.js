@@ -177,6 +177,10 @@ var controller = (function(){
 
 
     }
+    function stopAnimation( ){
+        animateController.stop();
+
+    }
     return {
         "initialize": initialize,
         "swapElements": swapElements,
@@ -189,6 +193,8 @@ var controller = (function(){
         "startGame": startGame,
         "openMainMenu": openMainMenu,
         "runTests": runTests,
-        "startAnimation":startAnimation
+        "startAnimation":startAnimation,
+        "stopAnimation":stopAnimation
+
     };
 })();
