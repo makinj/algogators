@@ -489,9 +489,8 @@ var interpreter = (function(){
     "fullyReduce":fullyReduce,
     "test": test
   };
-});
+})();
 
-console.log(JSON.stringify(interpreter().test([AND], 'and')));
-console.log(JSON.stringify(interpreter().test([OR] , 'or' )));
-console.log(JSON.stringify(interpreter().test([NOT], 'not')));
-
+// console.log(JSON.stringify(interpreter().test([AND], 'and')));
+// console.log(JSON.stringify(interpreter().test([OR] , 'or' )));
+// console.log(JSON.stringify(interpreter().test([NOT], 'not')));
