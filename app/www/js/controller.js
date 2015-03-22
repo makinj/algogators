@@ -27,7 +27,6 @@ var controller = (function(){
     function startGame(challengeName){
         testName = challengeName;
         testData = interpreter.getTestCase(testName.toLowerCase());
-        console.log("testData",testData);
         scene.activate();
         scene.loadScene(data,testData);
     }
@@ -125,15 +124,15 @@ var controller = (function(){
         }
     }
 
-    function removeDummies(data){
-        data = JSON.parse(JSON.stringify(data));
-        traverseChild(getDataAsFamily(data), function(child,parent,index){
+    function removeDummies(newData){
+        traverseChild(getDataAsFamily(newData), function(child,parent,index){
             if (child.type == "dummy"){
                 parent.splice(index,1)
-                removeDummies(data);
+                removeDummies(newData);
                 return true;
             }
         });
+        return newData;
     }
 
     function getHighestColor(foodChain){
@@ -163,10 +162,11 @@ var controller = (function(){
     }
 
     function runTests(){
-        var results = interpreter.test(data,testName.toLowerCase());
+        newData = JSON.parse(JSON.stringify(data));
+        var results = interpreter.test(removeDummies(newData),testName.toLowerCase());
         var passing = [];
-        for (int i = 0 ; i < results.length() ; i++){
-            passing.push(results.passed);
+        for (var i = 0 ; i < results.length ; i++){
+            passing.push(results[i].passed);
         }
         return passing;
     }
@@ -181,6 +181,7 @@ var controller = (function(){
         "getHighestColor": getHighestColor,
         "removeDummies": removeDummies,
         "startGame": startGame,
-        "openMainMenu": openMainMenu
+        "openMainMenu": openMainMenu,
+        "runTests": runTests
     };
 })();
