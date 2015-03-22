@@ -125,6 +125,9 @@ var simplerScene = (function(){
 
     function render(){
         renderer.clear("#fff");
+        renderer.getContext().globalAlpha = .3;
+        renderer.drawBgImg();
+        renderer.getContext().globalAlpha = 1;
         renderer.drawColorPanel(colorPanelX,colorPanelY,colorPanelWidth,colorPanelHeight);
         renderer.drawSelectionPanel(selectionPanelX,selectionPanelY,selectionPanelWidth,selectionPanelHeight);
         renderer.drawPlus(plusElement.x,plusElement.y,plusElement.width,plusElement.height);
@@ -339,7 +342,7 @@ var simplerScene = (function(){
         } else if ( e.type == "trash"){
             renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         } else if ( e.type == "rightArrow" ){
-            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
+            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y, false);
         }
     }
 
