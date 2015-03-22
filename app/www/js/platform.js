@@ -7,9 +7,12 @@ var platform = (function(){
         window.scene = simplerScene;
         window.ui = webUI;
 
-        renderer.initialize();
-        scene.initialize();
-        ui.initialize();
+        renderer.initialize(function(){
+            scene.initialize();
+            ui.initialize();
+            controller.initialize();
+            controller.startGame();
+        });
     }
 
     return {
