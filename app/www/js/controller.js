@@ -173,7 +173,9 @@ var controller = (function(){
 
     function startAnimation(testcaseNum, h,w, topLeftx,topLefty ){
         animateController.initialize(h,w, topLeftx,topLefty );
-        animateController.startVisualize(data, testName.toLowerCase(), testcaseNum);
+        newData = JSON.parse(JSON.stringify(data));
+
+        animateController.startVisualize(removeDummies(newData), testName.toLowerCase(), testcaseNum);
 
 
     }
