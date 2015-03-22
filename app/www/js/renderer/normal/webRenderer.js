@@ -147,6 +147,10 @@ var webRenderer = (function(){
     function drawIOPanel(x,y,w,h){
         context.fillStyle = "#eee";
         context.fillRect(x,y,w,h);
+        context.fillRect(x - 40,y,40,40);
+        context.fillStyle = "#999";
+        context.fillRect(x-23, y+10, 6, 25);
+        context.fillRect(x-35, y+5, 30, 6);
     }
     function drawPlus(x,y,w,h){
         context.fillStyle = "#ddd";

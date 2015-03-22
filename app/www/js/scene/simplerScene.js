@@ -14,17 +14,20 @@ var simplerScene = (function(){
     var colorElements = [];
     var currentColor;
     var plusElement;
+    var hoverElement;
 
     var dragging = false;
     var currentElementId ;
     var currentElementIndex ;
-    var currentElement ;
+    var currentElement;
+
+    var renderNextFrame;
 
     function initialize(){
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
         expWindowY = 0;
-        expWindowX = 50;
+        expWindowX = 0;
         expWindowWidth = windowSize.width - 50;
         expWindowHeight = windowSize.height * 5/8;
         colorPanelWidth = windowSize.width;
@@ -38,8 +41,11 @@ var simplerScene = (function(){
         ioPanel = {
             width: windowSize.width/2,
             height: expWindowHeight,
-            x: -windowSize.width/2,
-            y:0
+            x: windowSize.width/2,
+            y:0,
+            closedX: windowSize.width,
+            openX: windowSize.width/2,
+            open:true
         };
         plusElement = {
             x:windowSize.width - 40,
@@ -48,6 +54,13 @@ var simplerScene = (function(){
             height:30
         };
         currentColor = 0;
+        setInterval(function(){
+            animateIOPanel();
+            if (renderNextFrame){
+                render();
+                renderNextFrame = false;
+            }
+        },1000/30);
     }
 
     function loadUIElements(foodChain){
@@ -78,12 +91,12 @@ var simplerScene = (function(){
             var output = testFoodChains[u].output;
             for (var i =0;i<input.length;i++){
                 addElement(input[i],
-                    ioPanel.x + i * (ioPanel.width/input.length/3),ioPanel.y + (ioPanel.height / testFoodChains.length) * u,
+                    ioPanel.openX + i * (ioPanel.width/input.length/3),ioPanel.y + (ioPanel.height / testFoodChains.length) * u,
                     (ioPanel.width/input.length/3), ioPanel.height / testFoodChains.length, false);
             }
             for (var i =0;i<output.length;i++){
                 addElement(output[i],
-                    ioPanel.x + ioPanel.width/3*2 + i * (ioPanel.width/output.length/2),ioPanel.y+ (ioPanel.height / testFoodChains.length) * u,
+                    ioPanel.openX + ioPanel.width/3*2 + i * (ioPanel.width/output.length/2),ioPanel.y+ (ioPanel.height / testFoodChains.length) * u,
                     (ioPanel.width/output.length/3), ioPanel.height / testFoodChains.length, false);
             }
         }
@@ -92,9 +105,8 @@ var simplerScene = (function(){
         render(foodChain);
     }
 
-    function render(foodChain){
+    function render(){
         renderer.clear("#fff");
-        renderer.drawIOPanel(ioPanel.x,ioPanel.y,ioPanel.width,ioPanel.height);
         renderer.drawColorPanel(colorPanelX,colorPanelY,colorPanelWidth,colorPanelHeight);
         renderer.drawSelectionPanel(selectionPanelX,selectionPanelY,selectionPanelWidth,selectionPanelHeight);
         renderer.drawPlus(plusElement.x,plusElement.y,plusElement.width,plusElement.height);
@@ -106,6 +118,27 @@ var simplerScene = (function(){
                 colors[colorElement.color]
             );
         });
+        renderer.drawIOPanel(ioPanel.x,ioPanel.y,ioPanel.width,ioPanel.height);
+        drawIOPanelElements();
+
+        if (dragging){
+            hoverElementIndex = getObjectIndexAtId(hoverElement);
+            var e = elementArray[hoverElementIndex];
+            drawSingleElement(currentElement);
+            if (e){
+                renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            }
+
+        }
+    }
+
+    function drawIOPanelElements(){
+        for (var i = 0 ; i < elementArray.length ; i++){
+            if (!elementArray[i].draggable){
+                //TODO remove, this is really bad
+                drawSingleElement(elementArray[i],ioPanel.x - ioPanel.openX, ioPanel.y - ioPanel.openY);
+            }
+        }
     }
 
     function addElement(element, x, y, szx, szy, draggable){
@@ -217,29 +250,61 @@ var simplerScene = (function(){
 
     function drawElementArray(){
         for (var i = 0 ; i < elementArray.length ; i++){
-            if (!(dragging && elementArray[i].draggable && elementArray[i].id == currentElementId)){
+            if (!(dragging && elementArray[i].draggable && elementArray[i].id == currentElementId) && elementArray[i].draggable){
                 drawSingleElement(elementArray[i]);
             }
         }
     }
 
-    function drawSingleElement(e){
+    //TODO remove the offset, that's just a hacky solution to the ioPanel offset problem
+    function drawSingleElement(e,offx,offy){
+        offx = offx || 0;
+        offy = offy || 0;
         if (!e){
             return;
         }
         if ( e.type == "gator" ){
-            renderer.drawAlligator(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawAlligator(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y,e.color);
         } else if ( e.type == "egg" ){
-            renderer.drawEgg(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawEgg(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y,e.color);
         } else if ( e.type == "dummy" ){
-            renderer.drawDummy(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawDummy(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y,e.color);
         } else if ( e.type == "trash"){
-            renderer.drawTrash(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y);
+            renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         }
+    }
+
+    function animateIOPanel(){
+        if (ioPanel.open){
+            ioPanel.x -= (ioPanel.x - ioPanel.openX)/4;
+        }else{
+            ioPanel.x -= (ioPanel.x - ioPanel.closedX)/4;
+        }
+        // TODO this is called every frame which is bad
+        renderNextFrame = true;
+    }
+
+    function closeIOPanel(){
+        if (!ioPanel.open) return;
+        ioPanel.open = false;
+    }
+
+    function openIOPanel(){
+        if (ioPanel.open) return;
+        ioPanel.open = true;
     }
 
     var currentElementOffset;
     function uiMouseDown(x,y){
+
+        if (ioPanel.open && x > ioPanel.x){
+            return;
+        }else if (!ioPanel.open && x > ioPanel.x - 40&&
+                  y < ioPanel.y + 40){
+            openIOPanel();
+        }else{
+            closeIOPanel();
+        }
 
         if (x > plusElement.x && x < plusElement.x + plusElement.width &&
             y > plusElement.y && y < plusElement.y + plusElement.height){
@@ -288,7 +353,7 @@ var simplerScene = (function(){
                 element.color = colors[currentColor];
             }
         });
-        render();
+        renderNextFrame = true;
     }
 
     function addDraggys(){
@@ -327,7 +392,6 @@ var simplerScene = (function(){
 
     function uiMouseUp(x,y){
         var selectedElementId = getIdAt(x,y);
-        console.log(currentElementId,selectedElementId);
         if (currentElementId == "DRAGGY_GATOR"){
             dragging = false;
             controller.insertElement({
@@ -353,12 +417,12 @@ var simplerScene = (function(){
         else{
             dragging = false;
         }
-        render();
+        renderNextFrame = true;
     }
 
     function uiMouseMove(x,y){
         if (dragging){
-            var hoverElement = getIdAt(x,y);
+            hoverElement = getIdAt(x,y);
 
             hoverElementIndex = getObjectIndexAtId(hoverElement);
             var e = elementArray[hoverElementIndex];
@@ -367,11 +431,8 @@ var simplerScene = (function(){
             currentElement.topLeft.y = y - currentElementOffset.y;
             currentElement.bottomRight.x = x+currentElement.size.x - currentElementOffset.x;
             currentElement.bottomRight.y = y+currentElement.size.y - currentElementOffset.y;
-            render();
-            drawSingleElement(currentElement);
-            if (e){
-                renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            }
+
+            renderNextFrame = true;
         }
 
     }
@@ -402,6 +463,7 @@ var simplerScene = (function(){
         "initialize": initialize,
         "loadScene": loadFoodChain,
         "getIdAt": getIdAt,
+        "redraw": render,
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
         "uiMouseMove": uiMouseMove,
