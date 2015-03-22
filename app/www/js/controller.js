@@ -183,6 +183,17 @@ var controller = (function(){
         }
     }
 
+    function removeDummies(data){
+        data = JSON.parse(JSON.stringify(data));
+        traverseChild(getDataAsFamily(data), function(child,parent,index){
+            if (child.type == "dummy"){
+                parent.splice(index,1)
+                removeDummies(data);
+                return true;
+            }
+        });
+    }
+
     function getHighestColor(foodChain){
         var largestColorId = 5;
         traverseChild(getDataAsFamily(foodChain), function(element){
@@ -217,6 +228,7 @@ var controller = (function(){
         "insertElement": insertElement,
         "deleteElement": deleteElement,
         "getHighestColor": getHighestColor,
+        "removeDummies": removeDummies,
         "startGame": startGame,
         "openMainMenu": openMainMenu
     };
