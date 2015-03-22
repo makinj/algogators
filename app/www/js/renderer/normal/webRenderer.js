@@ -85,14 +85,28 @@ var webRenderer = (function(){
 
     function drawAlligator(x, y, width, height, color){
         if (!assetsLoaded) return;
-        context.drawImage(imgs["alg" + color.replace("#","")],
-            x,y,width,height);
+        if (color){
+            context.drawImage(imgs["alg" + color.replace("#","")],
+                x,y,width,height);
+        }
+        else{
+            context.drawImage(imgs["alg"+ "03A9F4"],
+                x,y,width,height);
+        }
+
     }
 
     function drawEgg(x,y,width,height,color){
         if (!assetsLoaded) return;
-        context.drawImage(imgs["egg" + color.replace("#","")],
-            x,y,width,height);
+
+        if (color){
+            context.drawImage(imgs["egg" + color.replace("#","")],
+                x,y,width,height);
+        }
+        else{
+            context.drawImage(imgs["egg"+ "03A9F4"],
+                x,y,width,height);
+        }
     }
 
     function drawDummy(x,y,width,height,color){

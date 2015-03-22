@@ -257,8 +257,8 @@ LOOP = [
 var interpreter = (function(){
 
   var maxId = 0;
-  var maxColorId = 0;
 
+  var colorIds = {};
 
   tests ={
     "and":[
@@ -302,35 +302,44 @@ var interpreter = (function(){
     ]
   };
 
-  function setMaxIds(foodChain){
+  function refreshIds(foodChain, notFirst){//notFirst is hacky do not change or pass it as a param.  pls ignore
+    notFirst = notFirst||0;
+    if(!notFirst){
+      colorIds = {};
+    }
     for (var i = 0; i < foodChain.length; i++) {
       if(foodChain[i].id>maxId){
         maxId = foodChain[i].id;
       }
 
       if(foodChain[i].type=="family"){
-        setMaxIds(foodChain[i].foodChain);
+        refreshIds(foodChain[i].foodChain,1);
 
         for (var j = 0; j < foodChain[i].gators.length; j++) {
-          if(foodChain[i].gators[j].colorId > maxColorId){
-            maxColorId = foodChain[i].gators[j].colorId;
-          }
-
           if(foodChain[i].gators[j].id>maxId){
             maxId = foodChain[i].id;
           }
+          colorIds[foodChain[i].gators[j].colorId] = 1;
         }
       }else{
-        if(foodChain[i].colorId > maxColorId){
-          maxColorId = foodChain[i].colorId;
-        }
+        colorIds[foodChain[i].colorId] = 1;
       }
     }
   }
 
+  function nextColorId(){
+    i=1;
+    while (colorIds[i]==1){
+      i++
+    }
+    console.log(i);
+    return i;
+  }
+
   function reduce(foodChain){
+    refreshIds(foodChain);
     step = {"events":[]};
-    if(foodChain[0].gators.length>0){//alpha reduce or done
+    if(foodChain[0].gators && foodChain[0].gators.length>0){//alpha reduce or done
       if(foodChain.length==1){
         return 0;
       }
@@ -428,8 +437,10 @@ var interpreter = (function(){
     newFamily = {type:"family", id:++maxId, gators:[], foodChain:[]};//create blank family with new Id
 
     for (var i=0; i < family.gators.length; i++){//add each gator over with new Id's and new color Id's
-      newFamily.gators[i]={type:"gator", id:++maxId, colorId:++maxColorId};
-      colorMap[family.gators[i].colorId]=maxColorId;//mark that this colorId is changed for all children eggs
+      colorId = nextColorId();
+      colorIds[colorId]=1;
+      newFamily.gators[i]={type:"gator", id:++maxId, colorId:colorId};
+      colorMap[family.gators[i].colorId]=colorId;//mark that this colorId is changed for all children eggs
     }
 
 
@@ -452,11 +463,11 @@ var interpreter = (function(){
   function fullyReduce(mainFoodChain, inputs){
     inputs = inputs||[];
     mainFoodChain = JSON.parse(JSON.stringify(mainFoodChain));
-    setMaxIds(mainFoodChain);
+    refreshIds(mainFoodChain);
     for(var i=0;i<inputs.length;i++){
       mainFoodChain[mainFoodChain.length]=copyFamily(inputs[i]);
     }
-    steps = [];
+    steps = [{"state":JSON.parse(JSON.stringify(mainFoodChain)), "events":[]}];
     step = reduce(mainFoodChain);
     while(step!=0 && steps.length<100){
       steps[steps.length]=step;
@@ -481,7 +492,7 @@ var interpreter = (function(){
   }
 
   return {
-    "setMaxIds":setMaxIds,
+    "refreshIds":refreshIds,
     "reduce":reduce,
     "isEqual":isEqual,
     "replaceEggs":replaceEggs,
@@ -489,9 +500,7 @@ var interpreter = (function(){
     "fullyReduce":fullyReduce,
     "test": test
   };
-});
-
-console.log(JSON.stringify(interpreter().test([AND], 'and')));
-console.log(JSON.stringify(interpreter().test([OR] , 'or' )));
-console.log(JSON.stringify(interpreter().test([NOT], 'not')));
-
+})();
+// console.log(JSON.stringify(interpreter.test([NOT], 'not')));
+// console.log(JSON.stringify(interpreter().test([OR] , 'or' )));
+// console.log(JSON.stringify(interpreter().test([NOT], 'not')));
