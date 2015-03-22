@@ -83,7 +83,13 @@ var animatedScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+aw , 'y' : y+ah }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator'});
+        elementArray.push({
+                'topLeft': {'x' : x , 'y' : y },
+                'bottomRight': {'x' : x+aw , 'y' : y+ah },
+                'size': {'x': aw , 'y':ah},
+                'id': id, 'color' : color,
+                'type':'gator'
+                });
     }
 
     function addDummy(x,y,w,h,color, id){
@@ -94,7 +100,13 @@ var animatedScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+aw , 'y' : y+ah }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy'});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'type':'dummy'
+            });
     }
 
     function addEgg(x,y,w,h,color,id){
@@ -114,7 +126,14 @@ var animatedScene = (function(){
         x = x + w/2 - aw/2
         y = y + h/2 - ah/2
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+aw , 'y' : y+ah }, 'size': {'x': aw , 'y':ah}, 'id': id,   'color' : color,'type':'egg'});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'color' : color,
+            'type':'egg'
+            });
 
     }
 

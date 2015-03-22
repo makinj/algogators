@@ -70,7 +70,7 @@ var simplerScene = (function(){
                 renderNextFrame = false;
             }
         },1000/30);
-    }
+        }
 
     function loadUIElements(foodChain){
         colorElements = [];
@@ -215,7 +215,8 @@ var simplerScene = (function(){
                 type: element.type,
                 draggable: true
             });
-        }else if (element.type == "rightArrow"){
+        }
+        else if (element.type == "rightArrow"){
             elementArray.push({
                 topLeft:{
                     x: x,
@@ -253,7 +254,15 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'color' : color,
+            'type':'gator',
+            draggable: draggable
+            });
     }
 
     function addDummy(x,y,w,h,color, id, draggable){
@@ -264,7 +273,14 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'type':'dummy',
+            draggable: draggable
+            });
     }
 
     function addEgg(x,y,w,h,color,id, draggable){
@@ -284,7 +300,15 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2
         y = y + h/2 - ah/2
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,   'color' : color,'type':'egg', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'color' : color,
+            'type':'egg',
+            draggable: draggable
+            });
 
     }
 

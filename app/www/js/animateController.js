@@ -1,4 +1,4 @@
-var controller = (function(){
+var animateController = (function(){
 
     var data;
 
@@ -6,7 +6,7 @@ var controller = (function(){
     }
 
     function startGame(){
-        // scene.loadScene(data);
+        // animatedScene.loadScene(data);
         var results = loadTestCase([{
             "type": "family",
             "id": 1,
@@ -79,7 +79,7 @@ var controller = (function(){
                 return true;
             }
         });
-        scene.loadScene(data);
+        animatedScene.loadScene(data);
         console.log(JSON.stringify(data,4));
     }
 
@@ -109,12 +109,12 @@ var controller = (function(){
 
     function loadAnimation(results, index, step){
         renderer.clear("#fff");
-        scene.initialize(false);
+        animatedScene.initialize(false);
         if (step){
-            scene.loadScene(results[index].steps[step].state);
+            animatedScene.loadScene(results[index].steps[step].state);
         }
         else{
-            scene.loadScene(results[index].steps[0].state);
+            animatedScene.loadScene(results[index].steps[0].state);
         }
     }
 
@@ -216,7 +216,7 @@ var controller = (function(){
                     else{
                         topEatenId = currState[1].foodChain[0].id;
                     }
-                    move = scene.calcEat(eatingGatorId, topEatenId);
+                    move = animatedScene.calcEat(eatingGatorId, topEatenId);
                     gradient = {
                         'x':-1* move.x / (3 * (transitiontime/divisor)),
                         'y':-1* move.y / (3 * (transitiontime/divisor)),
@@ -239,7 +239,7 @@ var controller = (function(){
                     }
                 }
                 else if (state == 1){ //Move
-                    scene.moveObject(eatingGatorId,
+                    animatedScene.moveObject(eatingGatorId,
                         gradient.x * time + move.pos.x,
                         gradient.y * time + move.pos.y
                     );
@@ -272,14 +272,14 @@ var controller = (function(){
                         time = 0;
                         state += 1;
                         renderer.clear("#fff");
-                        scene.initialize(false);
-                        scene.loadScene(intermidiate);
+                        animatedScene.initialize(false);
+                        animatedScene.loadScene(intermidiate);
                     }
                 }
                 else if (state == 4){ //Not Hatch
                     renderer.clear("#fff");
-                    scene.initialize(false);
-                    scene.loadScene(intermidiate);
+                    animatedScene.initialize(false);
+                    animatedScene.loadScene(intermidiate);
                 }
             }
         }, increment);
