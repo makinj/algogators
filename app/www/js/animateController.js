@@ -5,7 +5,7 @@ var animateController = (function(){
     function initialize(){
     }
 
-    function startGame(){
+    function startVisualize(){
         // animatedScene.loadScene(data);
         var results = loadTestCase([{
             "type": "family",
@@ -59,48 +59,6 @@ var animateController = (function(){
         loadAnimation(results, 0);
         startAnimation(results, 0);
     }
-
-    function getDataAsFamily(){
-        return {type:"family",gators:[],foodChain:data};
-    }
-
-    function swapElements(id1, id2){
-        console.log(JSON.stringify(data,4));
-        traverseChild(getDataAsFamily(), function(child1, parent1, child1Name){
-            if (child1.id == id1){
-                traverseChild(getDataAsFamily(), function(child2, parent2, child2Name){
-                    if (child2.id == id2){
-                        console.log("Found");
-                        parent2[child2Name] = child1;
-                        parent1[child1Name] = child2;
-                        return true;
-                    }
-                });
-                return true;
-            }
-        });
-        animatedScene.loadScene(data);
-        console.log(JSON.stringify(data,4));
-    }
-
-    function traverseChild(element, callback){
-        if (element.type == "family"){
-            if (element.gators.some(function(gator, index){
-                if (callback(gator, element.gators, index)){
-                    return true;
-                }
-            })) return true;
-            if (element.foodChain.some(function(child, index){
-                if (callback(child, element.foodChain, index)){
-                    return true;
-                }
-                if (traverseChild(child, callback)){
-                    return true;
-                }
-            })) return true;
-        }
-    }
-
 
     function loadTestCase(foodchain, testcase){
         var results = interpreter.test(foodchain, testcase);
@@ -291,9 +249,6 @@ var animateController = (function(){
 
 return {
     "initialize": initialize,
-    "swapElements": swapElements,
-    "startGame": startGame,
-    "loadAnimation": loadAnimation
-
+    "startVisualize": startVisualize    
 };
 })();

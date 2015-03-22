@@ -11,10 +11,16 @@ var platform = (function(){
         window.animator = animateController;
 
         renderer.initialize(function(){
-            scene.initialize();
-            ui.initialize();
-            controller.initialize();
-            controller.startGame();
+            if (true){
+                scene.initialize();
+                ui.initialize();
+                controller.initialize();
+                controller.startGame();
+            }
+            else{
+                animatedScene.initialize();
+                animator.startVisualize();
+            }
         });
     }
 
