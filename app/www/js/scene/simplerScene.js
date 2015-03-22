@@ -12,6 +12,8 @@ var simplerScene = (function(){
     var margin = .1;
     var elementArray = [];
     var colorElements = [];
+    var currentColor;
+    var plusElement;
 
     var dragging = false;
     var currentElementId ;
@@ -22,8 +24,8 @@ var simplerScene = (function(){
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
         expWindowY = 0;
-        expWindowX = windowSize.width/2;
-        expWindowWidth = windowSize.width/2;
+        expWindowX = 50;
+        expWindowWidth = windowSize.width - 50;
         expWindowHeight = windowSize.height * 5/8;
         colorPanelWidth = windowSize.width;
         colorPanelHeight = windowSize.height * 3/8 * 1/4;
@@ -36,9 +38,16 @@ var simplerScene = (function(){
         ioPanel = {
             width: windowSize.width/2,
             height: expWindowHeight,
-            x: 0,
+            x: -windowSize.width/2,
             y:0
         };
+        plusElement = {
+            x:windowSize.width - 40,
+            y:windowSize.height/2 - 100,
+            width:30,
+            height:30
+        };
+        currentColor = 0;
     }
 
     function loadUIElements(foodChain){
@@ -47,7 +56,7 @@ var simplerScene = (function(){
         var boxSize = Math.min(colorPanelWidth / highestColor, colorPanelHeight);
         for (var i = 0;i<highestColor;i++){
             var colorElement = {
-                color: colors[i],
+                color: i,
                 position:{
                     x: colorPanelWidth/2 - boxSize * highestColor /2 + boxSize/2 + boxSize *i,
                     y: colorPanelY,
@@ -79,6 +88,7 @@ var simplerScene = (function(){
             }
         }
         loadUIElements(foodChain);
+        addDraggys();
         render(foodChain);
     }
 
@@ -87,12 +97,13 @@ var simplerScene = (function(){
         renderer.drawIOPanel(ioPanel.x,ioPanel.y,ioPanel.width,ioPanel.height);
         renderer.drawColorPanel(colorPanelX,colorPanelY,colorPanelWidth,colorPanelHeight);
         renderer.drawSelectionPanel(selectionPanelX,selectionPanelY,selectionPanelWidth,selectionPanelHeight);
+        renderer.drawPlus(plusElement.x,plusElement.y,plusElement.width,plusElement.height);
         drawElementArray();
         colorElements.forEach(function(colorElement){
             renderer.drawColorBox(
                 colorElement.position.x, colorElement.position.y,
                 colorElement.width, colorElement.height,
-                colorElement.color
+                colors[colorElement.color]
             );
         });
     }
@@ -205,6 +216,24 @@ var simplerScene = (function(){
 
     var currentElementOffset;
     function uiMouseDown(x,y){
+
+        if (x > plusElement.x && x < plusElement.x + plusElement.width &&
+            y > plusElement.y && y < plusElement.y + plusElement.height){
+                controller.newFamily({
+                    "type":"family",
+                    "id": Math.floor(Math.random() * 9999999),
+                    "gators":[{
+                        "id": Math.floor(Math.random() * 9999999),
+                        "type":"dummy"
+                    }],
+                    "foodChain":[{
+                        "id": Math.floor(Math.random() * 9999999),
+                        "type":"dummy"
+                    }]
+                });
+                return;
+        }
+
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
             dragging = true;
@@ -218,11 +247,73 @@ var simplerScene = (function(){
 
         }
 
+        colorElements.forEach(function(element){
+            if (x > element.position.x && x < element.position.x + element.width &&
+                y > element.position.y && y < element.position.y + element.height){
+                    changeDraggyColor(element.color);
+            }
+        });
+
+    }
+
+    function changeDraggyColor(newColor){
+        currentColor = newColor;
+        elementArray.forEach(function(element){
+            if (element.id == "DRAGGY_GATOR" || element.id == "DRAGGY_EGG"){
+                element.colorId = currentColor;
+                element.color = colors[currentColor];
+            }
+        });
+        render();
+    }
+
+    function addDraggys(){
+
+        // One alligator, one egg and one family
+        addElement({
+            type: "gator",
+            id:"DRAGGY_GATOR",
+            colorId: currentColor,
+            color:colors[currentColor],
+        },  selectionPanelX, selectionPanelY + selectionPanelHeight/4,
+            selectionPanelWidth/3, selectionPanelHeight/2,
+            true);
+        addElement({
+            type: "egg",
+            id:"DRAGGY_EGG",
+            colorId: currentColor,
+            color:colors[currentColor],
+        },  selectionPanelX + selectionPanelWidth/3, selectionPanelY + selectionPanelHeight/4,
+            selectionPanelWidth/3, selectionPanelHeight/2,
+            true);
+        addElement({
+            type: "dummy",
+            id:"DRAGGY_DUMMY",
+            colorId: currentColor,
+            color:colors[currentColor],
+        },  selectionPanelX + selectionPanelWidth/3*2, selectionPanelY + selectionPanelHeight/4,
+            selectionPanelWidth/3, selectionPanelHeight/2,
+            true);
     }
 
     function uiMouseUp(x,y){
         var selectedElementId = getIdAt(x,y);
-        if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
+        if (currentElementId == "DRAGGY_GATOR"){
+            dragging = false;
+            controller.insertElement({
+                "type": "gator",
+                "colorId": currentColor
+            },selectedElementId);
+        }else if (currentElementId == "DRAGGY_EGG"){
+            dragging = false;
+            controller.insertElement({
+                "type": "egg",
+                "colorId": currentColor
+            },selectedElementId);
+        }else if (currentElementId == "DRAGGY_DUMMY"){
+            dragging = false;
+            controller.makeFamily(selectedElementId);
+        }else  if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
             dragging = false;
             controller.swapElements(selectedElementId,currentElementId);
         }
@@ -280,6 +371,7 @@ var simplerScene = (function(){
         "getIdAt": getIdAt,
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
-        "uiMouseMove": uiMouseMove
+        "uiMouseMove": uiMouseMove,
+        "debugGetElementArray": function(){return elementArray;}
     };
 })();

@@ -9,44 +9,14 @@ var controller = (function(){
                 "id": 5,
                 "gators": [
                     {
-                        "type": "gator",
-                        "id": 6,
-                        "colorId": 3
-                    },
-                    {
-                        "type": "gator",
-                        "id": 7,
-                        "colorId": 4
+                        "type": "dummy",
+                        "id": 20
                     }
                 ],
                 "foodChain": [
                     {
-                        "type": "egg",
-                        "id": 8,
-                        "colorId": 4
-                    },
-                    {
-                        "type": "family",
-                        "id": 9,
-                        "gators": [
-                            {
-                                "type": "gator",
-                                "id": 10,
-                                "colorId": 5
-                            },
-                            {
-                                "type": "gator",
-                                "id": 11,
-                                "colorId": 6
-                            }
-                        ],
-                        "foodChain": [
-                            {
-                                "type": "egg",
-                                "id": 12,
-                                "colorId": 5
-                            }
-                        ]
+                        "type": "dummy",
+                        "id": 21
                     }
                 ]
             }
@@ -124,6 +94,7 @@ var controller = (function(){
     }
 
     function swapElements(id1, id2){
+        console.log("Swapping",id1,id2);
         traverseChild(getDataAsFamily(data), function(child1, parent1, child1Name){
             if (child1.id == id1){
                 traverseChild(getDataAsFamily(data), function(child2, parent2, child2Name){
@@ -136,6 +107,49 @@ var controller = (function(){
                 return true;
             }
         });
+        scene.loadScene(data,testData);
+    }
+
+    function insertElement(element, intoObjectId){
+        var uid = Math.floor(Math.random() * 99999999);
+        //TODO check that id is unique
+        var copiedObject = JSON.parse(JSON.stringify(element));
+        copiedObject.id = uid;
+        traverseChild(getDataAsFamily(data), function(child,parentArray, index){
+            if (child.id == intoObjectId){
+                parentArray.splice(index,0, copiedObject);
+                return true;
+            }
+        });
+        scene.loadScene(data, testData);
+    }
+
+    function makeFamily(elementId){
+        // Note* this can't be done to eggs
+        var uid = Math.floor(Math.random() * 99999999);
+        //TODO check that id is unique
+        traverseChild(getDataAsFamily(data), function(child, parent, index){
+            if (child.id == elementId && child.type == "gator"){
+                parent[index] = {
+                    "type": "family",
+                    "id": uid,
+                    "gators":[child],
+                    "foodChain":[{
+                        "id": uid+1,
+                        "type": "dummy"
+                    }]
+                };
+                return true;
+            }
+        });
+        scene.loadScene(data, testData);
+    }
+
+    function newFamily(family){
+        console.log("OLD DATA",JSON.parse(JSON.stringify(data)));
+        console.log("INSERT FAMILY",family);
+        data.push(family);
+        console.log("NEW DATA",data);
         scene.loadScene(data,testData);
     }
 
@@ -158,7 +172,7 @@ var controller = (function(){
     }
 
     function getHighestColor(foodChain){
-        var largestColorId = 0;
+        var largestColorId = 5;
         traverseChild(getDataAsFamily(foodChain), function(element){
             if (element.colorId && element.colorId > largestColorId){
                 largestColorId = element.colorId;
@@ -170,6 +184,9 @@ var controller = (function(){
     return {
         "initialize": initialize,
         "swapElements": swapElements,
+        "makeFamily":makeFamily,
+        "newFamily": newFamily,
+        "insertElement": insertElement,
         "getHighestColor": getHighestColor,
         "startGame": startGame
     };

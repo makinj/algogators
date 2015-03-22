@@ -34,7 +34,7 @@ var webRenderer = (function(){
 
     function loadImages(onFinish){
 
-        var totalImages = colors.length * 2;
+        var totalImages = colors.length * 2 + 1;
         var loadedImages = 0;
         function markImageLoaded(){
             loadedImages ++;
@@ -42,6 +42,11 @@ var webRenderer = (function(){
                 onFinish();
             }
         }
+
+        var trashImage = new Image();
+        trashImage.src = "./img/trash.png";
+        trashImage.onload = markImageLoaded;
+        imgs["trash"] = trashImage;
 
         colors.forEach(function(color){
             // Load the colored egg and alligator
@@ -103,6 +108,12 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+    function drawTrash(x,y,width,height){
+        if (!assetsLoaded) return;
+        context.drawImage(imgs["trash"],
+            x,y,width,height);
+    }
+
     function drawHighlight(x,y,width,height,color){
         //Add a placeholder function for browsers that don't have setLineDash()
         if (!context.setLineDash) {
@@ -136,6 +147,11 @@ var webRenderer = (function(){
         context.fillStyle = "#eee";
         context.fillRect(x,y,w,h);
     }
+    function drawPlus(x,y,w,h){
+        context.fillStyle = "#ddd";
+        context.fillRect(x, y + h/3, w, h/3);
+        context.fillRect(x + w/3,y, w/3,h);
+    }
 
 
     function getAlligatorSize(){
@@ -162,6 +178,7 @@ var webRenderer = (function(){
         "drawColorPanel": drawColorPanel,
         "drawIOPanel": drawIOPanel,
         "drawSelectionPanel": drawSelectionPanel,
+        "drawPlus": drawPlus,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
