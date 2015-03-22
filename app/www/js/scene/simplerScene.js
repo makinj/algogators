@@ -28,6 +28,8 @@ var simplerScene = (function(){
     function initialize(){
         var windowSize = renderer.getScreenSize();
         colors = renderer.colors;
+        elementArray = [];
+        dragging = false;
         expWindowY = 0;
         expWindowX = 0;
         expWindowWidth = windowSize.width - 50;
@@ -71,7 +73,7 @@ var simplerScene = (function(){
                 }
             }
         },1000/30);
-    }
+        }
 
     function loadUIElements(foodChain){
         colorElements = [];
@@ -161,7 +163,13 @@ var simplerScene = (function(){
     function addElement(element, x, y, szx, szy, draggable){
         draggable = !(draggable===false);
         if (element.type == "family" || element.type == "dummyFamily"){
-            var totalElements = element.gators.length + 1;
+            var totalElements = 0;
+            if (element.gators && element.gators.length > 0){
+                totalElements = element.gators.length + 1;
+            }
+            else{
+                totalElements = 2;
+            }
 
             // Box size for gators
             var bxx = szx;
@@ -210,7 +218,8 @@ var simplerScene = (function(){
                 type: element.type,
                 draggable: true
             });
-        }else if (element.type == "rightArrow"){
+        }
+        else if (element.type == "rightArrow"){
             elementArray.push({
                 topLeft:{
                     x: x,
@@ -248,7 +257,15 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id, 'color' : color,  'type':'gator', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'color' : color,
+            'type':'gator',
+            draggable: draggable
+            });
     }
 
     function addDummy(x,y,w,h,color, id, draggable){
@@ -259,7 +276,14 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2 ;
         y = y + h/2 - ah/2 ;
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,  'type':'dummy', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'type':'dummy',
+            draggable: draggable
+            });
     }
 
     function addEgg(x,y,w,h,color,id, draggable){
@@ -279,7 +303,15 @@ var simplerScene = (function(){
         x = x + w/2 - aw/2
         y = y + h/2 - ah/2
 
-        elementArray.push({'topLeft': {'x' : x , 'y' : y }, 'bottomRight': {'x' : x+w , 'y' : y+h }, 'size': {'x': aw , 'y':ah}, 'id': id,   'color' : color,'type':'egg', draggable: draggable});
+        elementArray.push({
+            'topLeft': {'x' : x , 'y' : y },
+            'bottomRight': {'x' : x+aw , 'y' : y+ah },
+            'size': {'x': aw , 'y':ah},
+            'id': id,
+            'color' : color,
+            'type':'egg',
+            draggable: draggable
+            });
 
     }
 

@@ -339,7 +339,7 @@ var interpreter = (function(){
   function reduce(foodChain){
     refreshIds(foodChain);
     step = {"events":[]};
-    if(foodChain[0].gators.length>0){//alpha reduce or done
+    if(foodChain[0].gators && foodChain[0].gators.length>0){//alpha reduce or done
       if(foodChain.length==1){
         return 0;
       }
@@ -467,7 +467,7 @@ var interpreter = (function(){
     for(var i=0;i<inputs.length;i++){
       mainFoodChain[mainFoodChain.length]=copyFamily(inputs[i]);
     }
-    steps = [];
+    steps = [{"state":JSON.parse(JSON.stringify(mainFoodChain)), "events":[]}];
     step = reduce(mainFoodChain);
     while(step!=0 && steps.length<100){
       steps[steps.length]=step;

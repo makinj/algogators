@@ -5,7 +5,9 @@ var platform = (function(){
     function initialize(platformType, platformVersion){
         window.renderer = normalWebRenderer;
         window.scene = simplerScene;
+
         window.ui = webUI;
+        window.animator = animateController;
 
         renderer.initialize(function(){
             scene.initialize();
