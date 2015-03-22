@@ -243,16 +243,18 @@ var normalWebRenderer = (function(){
     function drawButton(x,y,width,height,text){
         var ul_x = x - (width/2); // x, upper left corner
         var ul_y = y - (height/2); // y, upper left corner
+        context.beginPath();
         context.rect(ul_x, ul_y, width, height);
         context.fillStyle = 'green'
         context.fill();
+        context.closePath();
         context.lineWidth = 7;
         context.strokeStyle = 'black';
         context.stroke();
         context.font = "30px Patrick Hand";
         context.fillStyle = 'yellow'
         context.textAlign = 'center';
-        context.fillText(text, x, y+10);
+        context.fillText(text, x, y+10)
     }
 
     function getAlligatorSize(){

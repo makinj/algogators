@@ -85,7 +85,7 @@ var controller = (function(){
         ];
     }
 
-    function startGame(){
+    function startGame(challengeName){
         scene.activate();
         scene.loadScene(data,testData);
     }

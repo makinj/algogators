@@ -11,6 +11,9 @@ var menu = (function(){
 
     var clickObjects = [];
 
+    var currentChallengeIndex = 0;
+    var allChallenges = ["NOT","AND","OR"];
+
     function initialize(){
         screen = renderer.getScreenSize();
     }
@@ -51,15 +54,37 @@ var menu = (function(){
         clickObjects = [];
         // eventFunction = mainMenuEventFunction;
         renderFunction = challengeRenderFunction;
-        // clickObjects.push({
-        //     x: screen.width/2-100,
-        //     y: screen.height/1.25 - 50,
-        //     w: 200,
-        //     h: 100,
-        //     mousedown: function(){
-        //         openChallengeMenu();
-        //     }
-        // });
+        clickObjects.push({
+            x: 0,
+            y: screen.height/2 - 50,
+            w: 100,
+            h: 100,
+            mousedown: function(){
+                // back
+                currentChallengeIndex = (allChallenges.length + currentChallengeIndex - 1) % allChallenges.length;
+                renderFunction();
+            }
+        });
+        clickObjects.push({
+            x:100,
+            y:screen.height/2-50,
+            w:screen.width-200,
+            h:100,
+            mousedown:function(x,y){
+                controller.startGame(allChallenges[currentChallengeIndex]);
+            }
+        });
+        clickObjects.push({
+            x: screen.width-100,
+            y: screen.height/2 - 50,
+            w: 100,
+            h: 100,
+            mousedown: function(){
+                // back
+                currentChallengeIndex = (allChallenges.length + currentChallengeIndex + 1) % allChallenges.length;
+                renderFunction();
+            }
+        });
         renderFunction();
     }
 
@@ -67,6 +92,10 @@ var menu = (function(){
         renderer.drawBgImg();
         renderer.drawImgButton("back",50, screen.height/2, 50, 100);
         renderer.drawImgButton("next",screen.width-50, screen.height/2, 50, 100);
+        renderer.drawButton(
+            screen.width/2, screen.height/2,
+            screen.width/2, 100,
+            allChallenges[currentChallengeIndex]);
     }
 
     function activate(){
@@ -80,7 +109,8 @@ var menu = (function(){
     function uiMouseUp(x,y){
         // eventFunction("mouseup", x,y);
         clickObjects.forEach(function(obj){
-            if (obj.mouseup){
+            if (obj.mouseup && x > obj.x && x < obj.x + obj.w &&
+                y > obj.y && y < obj.y + obj.h){
                 obj.mouseup(x,y);
             }
         });
@@ -88,7 +118,8 @@ var menu = (function(){
     function uiMouseDown(x,y){
         // eventFunction("mousedown", x,y);
         clickObjects.forEach(function(obj){
-            if (obj.mousedown){
+            if (obj.mousedown && x > obj.x && x < obj.x + obj.w &&
+                y > obj.y && y < obj.y + obj.h){
                 obj.mousedown(x,y);
             }
         });
@@ -96,7 +127,8 @@ var menu = (function(){
     function uiMouseMove(x,y){
         // eventFunction("mousemove", x,y);
         clickObjects.forEach(function(obj){
-            if (obj.mousemove){
+            if (obj.mousemove && x > obj.x && x < obj.x + obj.w &&
+                y > obj.y && y < obj.y + obj.h){
                 obj.mousemove(x,y);
             }
         });
