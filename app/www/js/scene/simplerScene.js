@@ -27,7 +27,7 @@ var simplerScene = (function(){
     var currentElementIndex ;
     var currentElement;
 
-    var renderSuccess = true;
+    var renderSuccess = false;
     var renderNextFrame;
     var active = false;
 
