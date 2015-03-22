@@ -26,6 +26,7 @@ var simplerScene = (function(){
     var currentElementIndex ;
     var currentElement;
 
+    var renderSuccess = true;
     var renderNextFrame;
     var active = false;
 
@@ -156,6 +157,10 @@ var simplerScene = (function(){
                 renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
             }
 
+        }
+
+        if (renderSuccess){
+            renderer.drawSuccess(0,0,renderer.getScreenSize().width,renderer.getScreenSize().height);
         }
     }
 
@@ -377,8 +382,20 @@ var simplerScene = (function(){
 
         var results = controller.runTests();
         runResults = results;
+        var anyFalse = false;
         for (var i = 0; i < results.length ; i++){
+            if (!results[i]){
+                anyFalse = true;
+            }
             arrowArray[i].valid = results[i] == 1;
+        }
+        if (!anyFalse){
+            renderSuccess = true;
+            setTimeout(function(){
+                deactivate();
+                menu.activate();
+                menu.openChallengeMenu();
+            },1000);
         }
         //     if (i < arrowArray.length){
         //         for (var a = 0 ; a < elementArray.length ; a++){

@@ -107,6 +107,17 @@ var normalWebRenderer = (function(){
         context.fillRect(0,0,eCanvas.width, eCanvas.height);
     }
 
+    function drawSuccess(x,y,w,h){
+        context.fillStyle = "#fff";
+        context.globalAlpha = .7;
+        context.fillRect(0,0,screenSize.width,screenSize.height);
+        context.globalAlpha = 1;
+        context.font = "64px Patrick Hand";
+        context.fillStyle = 'green'
+        context.textAlign = 'center';
+        context.fillText("Got it!", x + w/2, y+h/2);
+    }
+
     function drawAlligator(x, y, width, height, color){
         if (!assetsLoaded) return;
         if (color){
@@ -317,6 +328,7 @@ var normalWebRenderer = (function(){
         "drawPlus": drawPlus,
         "drawCheck": drawCheck,
         "drawTrash": drawTrash,
+        "drawSuccess": drawSuccess,
         "clearCanvas": clearCanvas,
         "getContext": function(){return context;},
         "drawRightArrow": drawRightArrow,

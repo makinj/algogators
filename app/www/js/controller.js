@@ -3,6 +3,10 @@ var controller = (function(){
     var data, testData;
     var testName;
     function initialize(){
+
+    }
+
+    function startGame(challengeName){
         data = [
             {
                 "type": "family",
@@ -21,10 +25,6 @@ var controller = (function(){
                 ]
             }
         ];
-
-    }
-
-    function startGame(challengeName){
         testName = challengeName;
         testData = interpreter.getTestCase(testName.toLowerCase());
         scene.activate();
