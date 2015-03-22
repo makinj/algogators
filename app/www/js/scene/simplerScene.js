@@ -34,7 +34,13 @@ var simplerScene = (function(){
     function addElement(element, x, y, szx, szy){
 
         if (element.type == "family" || element.type == "dummyFamily"){
-            var totalElements = element.gators.length + 1;
+            var totalElements = 0;
+            if (element.gators && element.gators.length > 0){
+                totalElements = element.gators.length + 1;
+            }
+            else{
+                totalElements = 2;
+            }
 
             // Box size for gators
             var bxx = szx;
