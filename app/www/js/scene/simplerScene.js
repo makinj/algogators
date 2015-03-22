@@ -329,7 +329,9 @@ var simplerScene = (function(){
     }
 
     var currentElementOffset;
+
     function uiMouseDown(x,y){
+				console.log("mouse down");
 
         if (ioPanel.open && x > ioPanel.x){
             return;
@@ -364,6 +366,7 @@ var simplerScene = (function(){
 
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
+						console.log("here");
             dragging = true;
             currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
