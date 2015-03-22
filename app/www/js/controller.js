@@ -129,6 +129,8 @@ var controller = (function(){
             }
             console.log(results[index].steps[i].events);
             var eaten_obj_id;
+            var eating_obj_id;
+
             function eats(events){
                 console.log("events", events);
                 for (var a = 0; a < events.length; a++){
@@ -137,7 +139,7 @@ var controller = (function(){
                         eaten_obj_id = events[a].food;
                         console.log("a", a);
                         console.log("eaten_obj_id", eaten_obj_id);
-
+                        eating_obj_id = events[a].gator;
                         return true;
                     }
                 }
@@ -157,6 +159,9 @@ var controller = (function(){
                       "gators":[],
                       "foodChain":[]
                 });
+                if (intermidiate[0].gators.length > 0){
+                    intermidiate[0].gators.splice(0,0, {"id": eaten_obj_id, "colorId":0, "type":"blank"});
+                }
 
                 scene.loadScene(intermidiate);
                 i = i-1;
@@ -169,7 +174,7 @@ var controller = (function(){
 
             }
             console.log(results[index].steps[i].state);
-        }, 5000);
+        }, 1500);
     }
 
 
