@@ -339,7 +339,7 @@ var simplerScene = (function(){
         } else if ( e.type == "trash"){
             renderer.drawTrash(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
         } else if ( e.type == "rightArrow" ){
-            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y);
+            renderer.drawRightArrow(e.topLeft.x+offx,e.topLeft.y+offy,e.size.x,e.size.y, false);
         }
     }
 

@@ -311,6 +311,8 @@ var normalWebRenderer = (function(){
         "drawPlus": drawPlus,
         "drawCheck": drawCheck,
         "drawTrash": drawTrash,
+        "clearCanvas": clearCanvas,
+        "getContext": function(){return context;},
         "drawRightArrow": drawRightArrow,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
