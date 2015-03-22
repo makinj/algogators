@@ -1,12 +1,14 @@
-var webRenderer = (function(){
+var normalWebRenderer = (function(){
 
     var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
+
+    var imgNames = ["banner", "next", "back"];
 
     var imgs = {};
 
     var eApp, eCanvas;
 
-    var algSize, eggSize;
+    var algSize, eggSize, bgSize;
 
     var context;
 
@@ -34,7 +36,7 @@ var webRenderer = (function(){
 
     function loadImages(onFinish){
 
-        var totalImages = colors.length * 2 + 2;
+        var totalImages = colors.length * 2 + 2 + imgNames.length;
         var loadedImages = 0;
         function markImageLoaded(){
             loadedImages ++;
@@ -42,7 +44,6 @@ var webRenderer = (function(){
                 onFinish();
             }
         }
-
         var trashImage = new Image();
         trashImage.src = "./img/trash.png";
         trashImage.onload = markImageLoaded;
@@ -52,6 +53,21 @@ var webRenderer = (function(){
         checkImage.src = "./img/check.png";
         checkImage.onload = markImageLoaded;
         imgs["check"] = checkImage;
+
+        var bgImage = new Image();
+        bgImage.src = "./img/bg.png";
+        bgImage.onload = function(){
+                if (!bgSize) bgSize = {width: bgImage.width, height: bgImage.height};
+                markImageLoaded();
+        };
+        imgs["bg"] = bgImage;
+
+        var bannerImage = new Image();
+        bannerImage.src = "./img/banner.svg";
+        bannerImage.onload = function(){
+                markImageLoaded();
+        };
+        imgs['banner'] = bannerImage;
 
         colors.forEach(function(color){
             // Load the colored egg and alligator
@@ -71,6 +87,14 @@ var webRenderer = (function(){
             };
             imgs["egg" + color.replace("#","")] = eggImage;
         });
+
+        imgNames.forEach(function(imgName){
+            var img = new Image();
+            img.src = "./img/" + imgName + ".png";
+            img.onload = markImageLoaded;
+            imgs[imgName] = img;
+        });
+
         console.log("Loading images...");
     }
 
@@ -210,6 +234,42 @@ var webRenderer = (function(){
         context.globalAlpha = 1;
     }
 
+    function drawBanner(x,y,width,height){
+        if (!assetsLoaded) return;
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs["egg009688"],ul_x,ul_y,width,height);
+    }
+
+	function drawBanner(x,y,width,height){
+        while (!assetsLoaded);
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs["banner"],ul_x,ul_y,width,height);
+	}
+
+	function drawBgImg(){
+            screenSize = getScreenSize();
+   			context.drawImage(imgs["bg"],0,0,screenSize.width, screenSize.height);
+	}
+
+    //x and y are center of button
+    function drawButton(x,y,width,height,text){
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.beginPath();
+        context.rect(ul_x, ul_y, width, height);
+        context.fillStyle = 'green'
+        context.fill();
+        context.closePath();
+        context.lineWidth = 7;
+        context.strokeStyle = 'black';
+        context.stroke();
+        context.font = "30px Patrick Hand";
+        context.fillStyle = 'yellow'
+        context.textAlign = 'center';
+        context.fillText(text, x, y+10)
+    }
 
     function getAlligatorSize(){
         return algSize;
@@ -230,6 +290,13 @@ var webRenderer = (function(){
         };
     }
 
+    function drawImgButton(imgName,x,y,width,height){
+        while (!assetsLoaded);
+        var ul_x = x - (width/2); // x, upper left corner
+        var ul_y = y - (height/2); // y, upper left corner
+        context.drawImage(imgs[imgName],ul_x,ul_y,width,height);
+    }
+
     return {
         "initialize": initialize,
         "clear": clearCanvas,
@@ -248,6 +315,10 @@ var webRenderer = (function(){
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
-        "colors": colors
+        "colors": colors,
+        "drawBanner": drawBanner,
+        "drawBgImg": drawBgImg,
+        "drawButton": drawButton,
+        "drawImgButton": drawImgButton
     };
 })();

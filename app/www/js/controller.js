@@ -85,8 +85,13 @@ var controller = (function(){
         ];
     }
 
-    function startGame(){
+    function startGame(challengeName){
+        scene.activate();
         scene.loadScene(data,testData);
+    }
+
+    function stopGame(){
+        scene.deactivate();
     }
 
     function getDataAsFamily(data){
@@ -200,6 +205,10 @@ var controller = (function(){
         });
     }
 
+    function openMainMenu(){
+        menu.openMainMenu();
+    }
+
     return {
         "initialize": initialize,
         "swapElements": swapElements,
@@ -208,6 +217,7 @@ var controller = (function(){
         "insertElement": insertElement,
         "deleteElement": deleteElement,
         "getHighestColor": getHighestColor,
-        "startGame": startGame
+        "startGame": startGame,
+        "openMainMenu": openMainMenu
     };
 })();
