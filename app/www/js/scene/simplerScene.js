@@ -130,6 +130,9 @@ var simplerScene = (function(){
 
     function render(){
         renderer.clear("#fff");
+        renderer.getContext().globalAlpha = .3;
+        renderer.drawBgImg();
+        renderer.getContext().globalAlpha = 1;
         renderer.drawColorPanel(colorPanelX,colorPanelY,colorPanelWidth,colorPanelHeight);
         renderer.drawSelectionPanel(selectionPanelX,selectionPanelY,selectionPanelWidth,selectionPanelHeight);
         renderer.drawPlus(plusElement.x,plusElement.y,plusElement.width,plusElement.height);

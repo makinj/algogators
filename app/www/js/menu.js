@@ -85,6 +85,16 @@ var menu = (function(){
                 renderFunction();
             }
         });
+        clickObjects.push({
+            x: screen.width/4,
+            y: screen.height - 150,
+            w:screen.width/2,
+            h:100,
+            mousedown: function(){
+                openTutorial();
+                renderFunction();
+            }
+        })
         renderFunction();
     }
 
@@ -96,6 +106,52 @@ var menu = (function(){
             screen.width/2, screen.height/2,
             screen.width/2, 100,
             allChallenges[currentChallengeIndex]);
+        renderer.drawButton(
+            screen.width/2, screen.height - 100,
+            screen.width/2, 100,
+            "Rules"
+        );
+    }
+
+    var tutImg0,tutImg1,currentSlide;
+    function openTutorial(){
+        console.log("Opening tutorial");
+        currentWindow = "tutorial";
+        clickObjects = [];
+        renderFunction = tutorialRenderFunction;
+
+        currentSlide = 1;
+        tutImg0 = new Image();
+        tutImg0.src = "./img/tutorial/" + currentSlide + ".png";
+        tutImg0.onload = renderFunction;
+        tutImg1 = new Image();
+        tutImg1.src = "./img/tutorial/" + (currentSlide+1) + ".png";
+        tutImg1.onload = renderFunction;
+        clickObjects.push({
+            x:0,
+            y:0,
+            w:screen.width,
+            h:screen.height,
+            mousedown: function(){
+                currentSlide ++;
+                tutImg0 = tutImg1;
+                tutImg1.src = "./img/tutorial/" + (currentSlide+1) + ".png";
+                if (currentSlide > 20){
+                    openChallengeMenu();
+                }
+                tutImg1.onload = renderFunction;
+            }
+        });
+        renderFunction();
+    }
+
+    function tutorialRenderFunction(){
+        // manually load images so that they're not cached
+        renderer.clearCanvas("#fff");
+        var context = renderer.getContext();
+        var ratio = tutImg0.height / tutImg0.width;
+        context.drawImage(tutImg0,0,0,screen.width,screen.width * ratio);
+        // renderer.getContext().drawImage(tutImg0,0,0);
     }
 
     function activate(){
