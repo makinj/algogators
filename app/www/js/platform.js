@@ -61,16 +61,13 @@ var platform = (function(){
         window.animator = animateController;
 
         renderer.initialize(function(){
-            if (false){
-                scene.initialize();
-                ui.initialize();
-                controller.initialize();
-                controller.startGame();
-            }
-            else{
-                animatedScene.initialize();
-                animator.startVisualize(test_data,'and',1);
-            }
+            scene.initialize();
+            ui.initialize();
+            controller.initialize();
+            controller.startGame();
+            animator.initialize(renderer.getScreenSize(), 0,0);
+            animator.startVisualize(test_data,'and',1);
+
         });
     }
 

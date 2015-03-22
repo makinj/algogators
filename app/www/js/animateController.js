@@ -1,6 +1,14 @@
 var animateController = (function(){
 
-    function initialize(){
+    var height = 0;
+    var width = 0;
+    var topLeft = {'x': 0 , 'y': 0};
+    function initialize(h,w, topLeftx,topLefty ){
+        height=h;
+        width=w;
+        topLeft.x = topLeftx;
+        topLeft.y = topLefty;
+        animatedScene.initialize(height,width,topLeft,false);
     }
 
     function startVisualize(testCase, testCaseId, testNum){
@@ -15,8 +23,6 @@ var animateController = (function(){
     }
 
     function loadAnimation(results, index, step){
-        renderer.clear("#fff");
-        animatedScene.initialize(false);
         if (step){
             animatedScene.loadScene(results[index].steps[step].state);
         }
@@ -178,14 +184,12 @@ var animateController = (function(){
                         console.log("hatchInterval",time);
                         time = 0;
                         state += 1;
-                        renderer.clear("#fff");
-                        animatedScene.initialize(false);
+                        animatedScene.reset();
                         animatedScene.loadScene(intermidiate);
                     }
                 }
                 else if (state == 4){ //Not Hatch
-                    renderer.clear("#fff");
-                    animatedScene.initialize(false);
+                    animatedScene.reset();
                     animatedScene.loadScene(intermidiate);
                 }
             }

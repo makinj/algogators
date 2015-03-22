@@ -10,15 +10,20 @@ var animatedScene = (function(){
     var currentElementIndex ;
     var currentElement ;
     var interactive = true;
-    function initialize(draggable){
-        var windowSize = renderer.getScreenSize();
+    var topLeft ;
+    function initialize(height, width, tL, draggable){
         colors = renderer.colors;
-        initialX = windowSize.width;
-        initialY = windowSize.height;
+        initialX = width;
+        initialY = height;
+        topLeft = tL;
         interactive = draggable;
         margin = .1;
         elementArray = [];
+        dragging = false;
+    }
 
+    function reset(){
+        elementArray = [];
         dragging = false;
     }
 
@@ -28,7 +33,6 @@ var animatedScene = (function(){
         for (var i =0;i<foodChain.length;i++){
             addElement(foodChain[i], i * (initialX/foodChain.length),0,(initialX/foodChain.length), initialY);
         }
-        drawElementArray();
     }
 
     function addElement(element, x, y, szx, szy){
@@ -150,72 +154,15 @@ var animatedScene = (function(){
             return;
         }
         if ( e.type == "gator" ){
-            renderer.drawAlligator(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawAlligator(e.topLeft.x+topLeft.x,e.topLeft.y+topLeft.y,e.size.x,e.size.y,e.color);
         } else if ( e.type == "egg" ){
-            renderer.drawEgg(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawEgg(e.topLeft.x+topLeft.x,e.topLeft.y+topLeft.y,e.size.x,e.size.y,e.color);
         } else if ( e.type == "dummy" ){
-            renderer.drawDummy(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+            renderer.drawDummy(e.topLeft.x+topLeft.x,e.topLeft.y+topLeft.y,e.size.x,e.size.y,e.color);
         }
     }
 
     var currentElementOffset;
-    function uiMouseDown(x,y){
-        if (!interactive){
-            return;
-        }
-        var selectedElementId = getIdAt(x,y);
-        if (selectedElementId){
-            dragging = true;
-            currentElementId = selectedElementId;
-            currentElementIndex = getObjectIndexAtId(currentElementId);
-            currentElement = JSON.parse(JSON.stringify(elementArray[currentElementIndex]));
-            currentElementOffset = {
-                x: x - currentElement.topLeft.x,
-                y: y - currentElement.topLeft.y
-            };
-
-        }
-
-    }
-
-    function uiMouseUp(x,y){
-        if (!interactive){
-            return;
-        }
-        var selectedElementId = getIdAt(x,y);
-        if (selectedElementId){
-            dragging = false;
-            controller.swapElements(selectedElementId,currentElementId);
-        }
-        else{
-            dragging = false;
-        }
-        renderer.clear("#fff");
-        drawElementArray();
-    }
-
-    function uiMouseMove(x,y){
-        if (!interactive){
-            return;
-        }
-        if (dragging){
-            var hoverElement = getIdAt(x,y);
-
-            hoverElementIndex = getObjectIndexAtId(hoverElement);
-            var e = elementArray[hoverElementIndex];
-
-            currentElement.topLeft.x = x - currentElementOffset.x;
-            currentElement.topLeft.y = y - currentElementOffset.y;
-            currentElement.bottomRight.x = x+currentElement.size.x - currentElementOffset.x;
-            currentElement.bottomRight.y = y+currentElement.size.y - currentElementOffset.y;
-            renderer.clear("#fff");
-            drawElementArray();
-            drawSingleElement(currentElement);
-            if (e){
-                renderer.drawHighlight(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
-            }
-        }
-    }
 
     function getIdAt(x,y){
         for (var i = 0 ; i < elementArray.length ; i++){
@@ -272,24 +219,21 @@ var animatedScene = (function(){
         elementArray[objId].bottomRight.x = x+elementArray[objId].size.x;
         elementArray[objId].bottomRight.y = y+elementArray[objId].size.y;
         // console.log(elementArray[objId]);
-        renderer.clear("#fff");
-        drawElementArray();
-        if (dragging){
-            drawSingleElement(currentElement);
-        }
-
     }
 
+    function render(){
+        drawElementArray();
+
+    }
 
     return {
         "initialize": initialize,
         "loadScene": rootDrawScene,
         "getIdAt": getIdAt,
-        "uiMouseDown": uiMouseDown,
-        "uiMouseUp": uiMouseUp,
-        "uiMouseMove": uiMouseMove,
         "calcMove":calcMove,
         "calcEat":calcEat,
-        "moveObject":moveObject
+        "moveObject":moveObject,
+        "render":render,
+        "reset":reset
     };
 })();
