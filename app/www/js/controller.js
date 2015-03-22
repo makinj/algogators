@@ -8,53 +8,54 @@ var controller = (function(){
     function startGame(){
         // scene.loadScene(data);
         var results = loadTestCase([{
-          "type": "family",
-          "id": 1,
-          "gators": [
-              {
-                "type": "gator",
-                "id": 2,
-                "colorId": 1
-              }, {
-               "type": "gator",
-               "id": 3,
-               "colorId": 2
-              }
-          ],
-          "foodChain": [
-            {
-              "type": "egg",
-              "id": 4,
-              "colorId": 1
-            }, {
-              "type": "egg",
-              "id": 5,
-              "colorId": 2
-            },
-            {
-              "type": "family",
-              "id": 6,
-              "gators": [
+            "type": "family",
+            "id": 1,
+            "gators": [
                 {
-                  "type": "gator",
-                  "id": 7,
-                  "colorId": 3
+                    "type": "gator",
+                    "id": 2,
+                    "colorId": 1
                 }, {
-                  "type": "gator",
-                  "id": 8,
-                  "colorId": 4
+                    "type": "gator",
+                    "id": 3,
+                    "colorId": 2
                 }
-              ],
-              "foodChain": [
+            ],
+            "foodChain": [
                 {
-                  "type": "egg",
-                  "id": 9,
-                  "colorId": 4
+                    "type": "egg",
+                    "id": 4,
+                    "colorId": 1
+                },
+                {
+                    "type": "egg",
+                    "id": 5,
+                    "colorId": 1
+                },
+                {
+                    "type": "family",
+                    "id": 6,
+                    "gators": [
+                        {
+                            "type": "gator",
+                            "id": 7,
+                            "colorId": 3
+                        }, {
+                            "type": "gator",
+                            "id": 8,
+                            "colorId": 4
+                        }
+                    ],
+                    "foodChain": [
+                        {
+                            "type": "egg",
+                            "id": 9,
+                            "colorId": 4
+                        }
+                    ]
                 }
-              ]
-            }
-          ]
-      }], 'and', 2);
+            ]
+        }], 'and', 2);
         loadAnimation(results, 0);
         startAnimation(results, 0);
     }
@@ -108,7 +109,7 @@ var controller = (function(){
 
     function loadAnimation(results, index, step){
         renderer.clear("#fff");
-        scene.initialize();
+        scene.initialize(false);
         if (step){
             scene.loadScene(results[index].steps[step].state);
         }
@@ -116,73 +117,180 @@ var controller = (function(){
             scene.loadScene(results[index].steps[0].state);
         }
     }
+
     function startAnimation(results, index){
         var i = 0;
         console.log(results[index].steps);
         var repeat = false;
-        var interval = setInterval(function(){
-            i++;
-            console.log(i);
-            if (i == results[index].steps.length){
-                clearInterval(interval);
-                return;
-            }
-            console.log(results[index].steps[i].events);
-            var eaten_obj_id;
-            var eating_obj_id;
+        var transitiontime = 1000;
+        var time = 0;
+        var increment = 2;
+        var foodObjId = 0;
+        var eatingGatorId = 0;
+        var hatchingEggsIds = [];
+        var stateTime = 0;
+        var first = true;
+        var eatLoops = false;
+        var intermidiate;
+        var hatchState;
+        var currState;
+        var divisor = 14;
+        var state = 0;
+        var topEatenId;
+        var move;
+        var gradient;
 
-            function eats(events){
-                console.log("events", events);
-                for (var a = 0; a < events.length; a++){
-                    console.log("events[a].action", events[a]);
-                    if (events[a] && events[a].action && events[a].action == "eat"){
-                        eaten_obj_id = events[a].food;
-                        console.log("a", a);
-                        console.log("eaten_obj_id", eaten_obj_id);
-                        eating_obj_id = events[a].gator;
-                        return true;
-                    }
+        function eats(events){
+            for (var a = 0; a < events.length; a++){
+                if (events[a] && events[a].action && events[a].action == "eat"){
+                    var foodObjId = events[a].food;
+                    var eatingGatorId = events[a].gator;
+                    return {'eat':true, 'foodObjId':foodObjId, 'eatingGatorId':eatingGatorId};
                 }
             }
-            if (!repeat && eats(results[index].steps[i].events)){
-                console.log("Now", results[index].steps[i].events);
-                console.log("Prev", results[index].steps[i-1].events);
+            return {'eat':false, 'foodObjId':0, 'eatingGatorId':0};
 
-                console.log("eats");
-                repeat = true;
-                renderer.clear("#fff");
-                scene.initialize();
-                var intermidiate = JSON.parse(JSON.stringify(results[index].steps[i].state));
-                intermidiate.splice(1, 0, {
-                      "id": eaten_obj_id,
-                      "type": "family",
-                      "gators":[],
-                      "foodChain":[]
-                });
-                if (intermidiate[0].gators.length > 0){
-                    intermidiate[0].gators.splice(0,0, {"id": eaten_obj_id, "colorId":0, "type":"blank"});
+        }
+
+        function hatches(events){
+            var hatchingEggsIds = [];
+
+            for (var a = 0; a < events.length; a++){
+                if (events[a] && events[a].action && events[a].action == "hatch"){
+                    hatchingEggsIds.push( events[a].gator);
                 }
-
-                scene.loadScene(intermidiate);
-                i = i-1;
+            }
+            if (hatchingEggsIds.length > 0){
+                return  {'hatch':true, 'hatchingEggsIds':hatchingEggsIds};
             }
             else{
-                console.log("no eats");
-                repeat = false;
-                loadAnimation(results, index, i);
-
+                return  {'hatch':false, 'hatchingEggsIds':[]};
 
             }
-            console.log(results[index].steps[i].state);
-        }, 1500);
-    }
+        }
+
+        var interval = setInterval(function(){
+            stateTime += increment;
+            time += increment;
+            // console.log(i);
+            if (stateTime > transitiontime){
+                stateTime = 0;
+                time = 0;
+                console.log(i);
+                console.log(results[index].steps[i].state);
+                i++;
+                if (i == results[index].steps.length){
+                    clearInterval(interval);
+                    return;
+                }
+                hatchingEggsIds = [];
+                eatLoops = false;
+
+                var eatsState = eats(results[index].steps[i].events);
+                foodObjId = eatsState.foodObjId;
+                eatingGatorId = eatsState.eatingGatorId;
+                if (!repeat && eatsState.eat){
+                    eatLoops = true;
+                    console.log("eats");
+                    repeat = true;
+                    intermidiate = JSON.parse(JSON.stringify(results[index].steps[i].state));
+                    hatchState = hatches(results[index].steps[i].events);
+                    hatchingEggsIds = hatchState.hatchingEggsIds;
+                    i = i-1;
+                    currState = results[index].steps[i].state;
+                    loadAnimation(results, index, i);
+                    intermidiate.splice(1, 0, {
+                        "id": foodObjId,
+                        "type": "family",
+                        "gators":[],
+                        "foodChain":[]
+                    });
+                    if (intermidiate[0].gators.length > 0){
+                        intermidiate[0].gators.splice(0,0, {"id": foodObjId, "colorId":0, "type":"blank"});
+                    }
+                    state = 0;
+                    var topEatenId = 0;
+                    if (currState[1].gators.length > 0){
+                        topEatenId = currState[1].gators[0].id;
+                    }
+                    else{
+                        topEatenId = currState[1].foodChain[0].id;
+                    }
+                    move = scene.calcEat(eatingGatorId, topEatenId);
+                    gradient = {
+                        'x':-1* move.x / (3 * (transitiontime/divisor)),
+                        'y':-1* move.y / (3 * (transitiontime/divisor)),
+                    }
+                    console.log("gradient",gradient);
+                }
+                else{
+                    console.log("no eats");
+                    repeat = false;
+                    loadAnimation(results, index, i);
+                }
+            }
+            if (eatLoops){
+                time += increment;
+                if (state == 0){ //Wait
+                    if (time > (transitiontime/divisor)){
+                        console.log("waitInterval",time);
+                        time = 0;
+                        state += 1;
+                    }
+                }
+                else if (state == 1){ //Move
+                    scene.moveObject(eatingGatorId,
+                        gradient.x * time + move.pos.x,
+                        gradient.y * time + move.pos.y
+                    );
+                    if (time > 3 * (transitiontime/divisor)){
+                        console.log("moveInterval",time);
+                        time = 0;
+                        state += 1;
+                    }
+                }
+                else if (state == 2){ //Eat
+                    if (time > 3 * (transitiontime/divisor)){
+                        console.log("eatInterval",time);
+                        time = 0;
+                        state += 1;
+                    }
+                }
+                else if (state == 3){ //Die
+                    if (time > 3 * (transitiontime/divisor)){
+                        console.log("dieInterval",time);
+                        time = 0;
+                        state += 1;
+                    }
+                }
+                else if (state == 4 && hatchState.hatch){ //Hatch
+                    if (time > 3 * (transitiontime/divisor)){
+                        console.log("hatchInterval",time);
+                        time = 0;
+                        state += 1;
+                        renderer.clear("#fff");
+                        scene.initialize(false);
+                        scene.loadScene(intermidiate);
+                    }
+                }
+                else if (state == 4){ //Not Hatch
+                    renderer.clear("#fff");
+                    scene.initialize(false);
+                    scene.loadScene(intermidiate);
+                }
+            }
+        }, increment);
 
 
-    return {
-        "initialize": initialize,
-        "swapElements": swapElements,
-        "startGame": startGame,
-        "loadAnimation": loadAnimation
 
-    };
+}
+
+
+return {
+    "initialize": initialize,
+    "swapElements": swapElements,
+    "startGame": startGame,
+    "loadAnimation": loadAnimation
+
+};
 })();

@@ -501,6 +501,6 @@ var interpreter = (function(){
     "test": test
   };
 })();
-console.log(JSON.stringify(interpreter.test([NOT], 'not')));
+// console.log(JSON.stringify(interpreter.test([NOT], 'not')));
 // console.log(JSON.stringify(interpreter().test([OR] , 'or' )));
 // console.log(JSON.stringify(interpreter().test([NOT], 'not')));
