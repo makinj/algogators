@@ -437,10 +437,12 @@ var interpreter = (function(){
     newFamily = {type:"family", id:++maxId, gators:[], foodChain:[]};//create blank family with new Id
 
     for (var i=0; i < family.gators.length; i++){//add each gator over with new Id's and new color Id's
-      colorId = nextColorId();
-      colorIds[colorId]=1;
-      newFamily.gators[i]={type:"gator", id:++maxId, colorId:colorId};
-      colorMap[family.gators[i].colorId]=colorId;//mark that this colorId is changed for all children eggs
+      newFamily.gators[i]={type:"gator", id:++maxId};
+      if(family.gators[i].colorId in colorMap){
+        newFamily.gators[i].colorId=colorMap[family.gators[i].colorId];//mark that this colorId is changed for all children eggs
+      }else{
+        newFamily.gators[i].colorId=family.gators[i].colorId
+      }
     }
 
 
