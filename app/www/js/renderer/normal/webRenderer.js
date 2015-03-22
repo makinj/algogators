@@ -117,6 +117,26 @@ var webRenderer = (function(){
         context.closePath();
     }
 
+    function drawColorPanel(x,y,width,height){
+        context.fillStyle = "#aaa";
+        context.fillRect(x,y,width,height);
+    }
+
+    function drawColorBox(x,y,width,height, color){
+        context.fillStyle = color;
+        context.fillRect(x,y,width,height);
+    }
+
+    function drawSelectionPanel(x,y,width,height){
+        context.fillStyle = "#ddd";
+        context.fillRect(x,y,width,height);
+    }
+
+    function drawIOPanel(x,y,w,h){
+        context.fillStyle = "#eee";
+        context.fillRect(x,y,w,h);
+    }
+
 
     function getAlligatorSize(){
         return algSize;
@@ -138,6 +158,10 @@ var webRenderer = (function(){
         "drawAlligator": drawAlligator,
         "drawDummy": drawDummy,
         "drawHighlight": drawHighlight,
+        "drawColorBox": drawColorBox,
+        "drawColorPanel": drawColorPanel,
+        "drawIOPanel": drawIOPanel,
+        "drawSelectionPanel": drawSelectionPanel,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
