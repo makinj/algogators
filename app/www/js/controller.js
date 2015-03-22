@@ -94,7 +94,6 @@ var controller = (function(){
     }
 
     function swapElements(id1, id2){
-        console.log("Swapping",id1,id2);
         traverseChild(getDataAsFamily(data), function(child1, parent1, child1Name){
             if (child1.id == id1){
                 traverseChild(getDataAsFamily(data), function(child2, parent2, child2Name){
@@ -146,10 +145,18 @@ var controller = (function(){
     }
 
     function newFamily(family){
-        console.log("OLD DATA",JSON.parse(JSON.stringify(data)));
-        console.log("INSERT FAMILY",family);
         data.push(family);
-        console.log("NEW DATA",data);
+        scene.loadScene(data,testData);
+    }
+
+    function deleteElement(elementId){
+        traverseChild(getDataAsFamily(data), function(child,parent,index){
+            if (child.id == elementId){
+                parent.splice(index,1);
+                return true;
+            }
+        });
+        validateAndCorrect(data);
         scene.loadScene(data,testData);
     }
 
@@ -181,12 +188,25 @@ var controller = (function(){
         return largestColorId;
     }
 
+    function validateAndCorrect(data){
+        traverseChild(getDataAsFamily(data), function(child,parent,index){
+            if (child.type == "family"){
+                if (child.gators.length == 0 || child.foodChain.length == 0){
+                    parent.splice(index,1);
+                    validateAndCorrect(data);
+                    return true;
+                }
+            }
+        });
+    }
+
     return {
         "initialize": initialize,
         "swapElements": swapElements,
         "makeFamily":makeFamily,
         "newFamily": newFamily,
         "insertElement": insertElement,
+        "deleteElement": deleteElement,
         "getHighestColor": getHighestColor,
         "startGame": startGame
     };

@@ -140,6 +140,28 @@ var simplerScene = (function(){
             addDummy(x,y,szx,szy,colors[element.colorId],element.id, draggable);
         }
 
+
+        // UI Elements (TODO remove these)
+        if (element.type == "trash"){
+            elementArray.push({
+                topLeft:{
+                    x: x,
+                    y: y
+                },
+                bottomRight:{
+                    x: x + szx,
+                    y: y + szy
+                },
+                size:{
+                    x:szx,
+                    y:szy
+                },
+                id: element.id,
+                type: element.type,
+                draggable: true
+            });
+        }
+
     }
 
     function addAlligator(x,y,w,h,color, id, draggable){
@@ -211,6 +233,8 @@ var simplerScene = (function(){
             renderer.drawEgg(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
         } else if ( e.type == "dummy" ){
             renderer.drawDummy(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y,e.color);
+        } else if ( e.type == "trash"){
+            renderer.drawTrash(e.topLeft.x,e.topLeft.y,e.size.x,e.size.y);
         }
     }
 
@@ -268,14 +292,19 @@ var simplerScene = (function(){
     }
 
     function addDraggys(){
-
         // One alligator, one egg and one family
+        addElement({
+            "type": "trash",
+            "id":"DRAGGY_TRASH"
+        },  selectionPanelX, selectionPanelY + selectionPanelHeight/4,
+            selectionPanelWidth/3, selectionPanelHeight/2,
+            true);
         addElement({
             type: "gator",
             id:"DRAGGY_GATOR",
             colorId: currentColor,
             color:colors[currentColor],
-        },  selectionPanelX, selectionPanelY + selectionPanelHeight/4,
+        },  selectionPanelX + selectionPanelWidth/4, selectionPanelY + selectionPanelHeight/4,
             selectionPanelWidth/3, selectionPanelHeight/2,
             true);
         addElement({
@@ -283,7 +312,7 @@ var simplerScene = (function(){
             id:"DRAGGY_EGG",
             colorId: currentColor,
             color:colors[currentColor],
-        },  selectionPanelX + selectionPanelWidth/3, selectionPanelY + selectionPanelHeight/4,
+        },  selectionPanelX + selectionPanelWidth/4*2, selectionPanelY + selectionPanelHeight/4,
             selectionPanelWidth/3, selectionPanelHeight/2,
             true);
         addElement({
@@ -291,13 +320,14 @@ var simplerScene = (function(){
             id:"DRAGGY_DUMMY",
             colorId: currentColor,
             color:colors[currentColor],
-        },  selectionPanelX + selectionPanelWidth/3*2, selectionPanelY + selectionPanelHeight/4,
+        },  selectionPanelX + selectionPanelWidth/4*3, selectionPanelY + selectionPanelHeight/4,
             selectionPanelWidth/3, selectionPanelHeight/2,
             true);
     }
 
     function uiMouseUp(x,y){
         var selectedElementId = getIdAt(x,y);
+        console.log(currentElementId,selectedElementId);
         if (currentElementId == "DRAGGY_GATOR"){
             dragging = false;
             controller.insertElement({
@@ -313,7 +343,10 @@ var simplerScene = (function(){
         }else if (currentElementId == "DRAGGY_DUMMY"){
             dragging = false;
             controller.makeFamily(selectedElementId);
-        }else  if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
+        }else if (selectedElementId == "DRAGGY_TRASH"){
+            dragging = false;
+            controller.deleteElement(currentElementId);
+        }else if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
             dragging = false;
             controller.swapElements(selectedElementId,currentElementId);
         }

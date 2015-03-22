@@ -110,8 +110,9 @@ var webRenderer = (function(){
 
     function drawTrash(x,y,width,height){
         if (!assetsLoaded) return;
+        var trashRatio = getTrashSize().width / getTrashSize().height;
         context.drawImage(imgs["trash"],
-            x,y,width,height);
+            (x + width/2) - height * trashRatio/2,y,height * trashRatio,height);
     }
 
     function drawHighlight(x,y,width,height,color){
@@ -166,6 +167,12 @@ var webRenderer = (function(){
             height:window.innerHeight
         };
     }
+    function getTrashSize(){
+        return {
+            width: imgs["trash"].width,
+            height: imgs["trash"].height
+        };
+    }
 
     return {
         "initialize": initialize,
@@ -179,6 +186,7 @@ var webRenderer = (function(){
         "drawIOPanel": drawIOPanel,
         "drawSelectionPanel": drawSelectionPanel,
         "drawPlus": drawPlus,
+        "drawTrash": drawTrash,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
         "getScreenSize": getScreenSize,
