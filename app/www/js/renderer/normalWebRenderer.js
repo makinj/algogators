@@ -294,7 +294,7 @@ var normalWebRenderer = (function(){
         "colors": colors,
         "drawBanner": drawBanner,
         "drawBgImg": drawBgImg,
-        "drawButton": drawButton
+        "drawButton": drawButton,
         "drawImgButton": drawImgButton
     };
 })();
