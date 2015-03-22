@@ -5,6 +5,8 @@ var animateController = (function(){
     var topLeft = {'x': 0 , 'y': 0};
 
     function initialize(h,w, topLeftx,topLefty ){
+        console.log("initialize",h,w, topLeftx,topLefty);
+
         height=h;
         width=w;
         topLeft.x = topLeftx;
@@ -14,6 +16,7 @@ var animateController = (function(){
 
     // EXAMPLE: animator.startVisualize(test_data,'and',1);
     function startVisualize(testCase, testCaseId, testNum){
+        console.log("visulize",testCase, testCaseId, testNum);
         var results = loadTestCase(testCase, testCaseId, testNum);
         loadAnimation(results, testNum);
         startAnimation(results, testNum);
