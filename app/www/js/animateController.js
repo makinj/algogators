@@ -1,63 +1,12 @@
 var animateController = (function(){
 
-    var data;
-
     function initialize(){
     }
 
-    function startVisualize(){
-        // animatedScene.loadScene(data);
-        var results = loadTestCase([{
-            "type": "family",
-            "id": 1,
-            "gators": [
-                {
-                    "type": "gator",
-                    "id": 2,
-                    "colorId": 1
-                }, {
-                    "type": "gator",
-                    "id": 3,
-                    "colorId": 2
-                }
-            ],
-            "foodChain": [
-                {
-                    "type": "egg",
-                    "id": 4,
-                    "colorId": 1
-                },
-                {
-                    "type": "egg",
-                    "id": 5,
-                    "colorId": 1
-                },
-                {
-                    "type": "family",
-                    "id": 6,
-                    "gators": [
-                        {
-                            "type": "gator",
-                            "id": 7,
-                            "colorId": 3
-                        }, {
-                            "type": "gator",
-                            "id": 8,
-                            "colorId": 4
-                        }
-                    ],
-                    "foodChain": [
-                        {
-                            "type": "egg",
-                            "id": 9,
-                            "colorId": 4
-                        }
-                    ]
-                }
-            ]
-        }], 'and', 2);
-        loadAnimation(results, 0);
-        startAnimation(results, 0);
+    function startVisualize(testCase, testCaseId, testNum){
+        var results = loadTestCase(testCase, testCaseId, testNum);
+        loadAnimation(results, testNum);
+        startAnimation(results, testNum);
     }
 
     function loadTestCase(foodchain, testcase){
@@ -82,7 +31,7 @@ var animateController = (function(){
         var repeat = false;
         var transitiontime = 1000;
         var time = 0;
-        var increment = 2;
+        var increment = 1000/30;
         var foodObjId = 0;
         var eatingGatorId = 0;
         var hatchingEggsIds = [];
@@ -249,6 +198,6 @@ var animateController = (function(){
 
 return {
     "initialize": initialize,
-    "startVisualize": startVisualize    
+    "startVisualize": startVisualize
 };
 })();
