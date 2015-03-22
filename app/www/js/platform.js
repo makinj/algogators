@@ -10,6 +10,7 @@ var platform = (function(){
         renderer.initialize(function(){
             scene.initialize();
             ui.initialize();
+            menu.initialize();
 
             /*
             renderer.drawBgImg();
@@ -22,7 +23,8 @@ var platform = (function(){
             */
 
             controller.initialize();
-            controller.startGame();
+            controller.openMainMenu();
+            // controller.startGame();
 
             /*
             renderer.drawBgImg();

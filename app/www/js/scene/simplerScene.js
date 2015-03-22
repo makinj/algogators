@@ -23,6 +23,7 @@ var simplerScene = (function(){
     var currentElement;
 
     var renderNextFrame;
+    var active = false;
 
     function initialize(){
         var windowSize = renderer.getScreenSize();
@@ -62,10 +63,12 @@ var simplerScene = (function(){
         };
         currentColor = 0;
         setInterval(function(){
-            animateIOPanel();
-            if (renderNextFrame){
-                render();
-                renderNextFrame = false;
+            if (active){
+                animateIOPanel();
+                if (renderNextFrame){
+                    render();
+                    renderNextFrame = false;
+                }
             }
         },1000/30);
     }
@@ -498,6 +501,14 @@ var simplerScene = (function(){
         return null;
     }
 
+    function activate(){
+        active = true;
+    }
+
+    function deactivate(){
+        active = false;
+    }
+
     return {
         "initialize": initialize,
         "loadScene": loadFoodChain,
@@ -506,6 +517,9 @@ var simplerScene = (function(){
         "uiMouseDown": uiMouseDown,
         "uiMouseUp": uiMouseUp,
         "uiMouseMove": uiMouseMove,
+        "activate": activate,
+        "deactivate": deactivate,
+        "isActive": function(){return active},
         "debugGetElementArray": function(){return elementArray;}
     };
 })();
