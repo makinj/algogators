@@ -103,7 +103,57 @@ var controller = (function(){
     }
 
     function startGame(){
-        scene.loadScene(data);
+        // scene.loadScene(data);
+        var results = loadTestCase([{
+          "type": "family",
+          "id": 1,
+          "gators": [
+            {
+              "type": "gator",
+              "id": 2,
+              "colorId": 1
+            }, {
+             "type": "gator",
+             "id": 3,
+             "colorId": 2
+            }
+          ],
+          "foodChain": [
+            {
+              "type": "egg",
+              "id": 4,
+              "colorId": 1
+            }, {
+              "type": "egg",
+              "id": 5,
+              "colorId": 2
+            },
+            {
+              "type": "family",
+              "id": 6,
+              "gators": [
+                {
+                  "type": "gator",
+                  "id": 7,
+                  "colorId": 3
+                }, {
+                  "type": "gator",
+                  "id": 8,
+                  "colorId": 4
+                }
+              ],
+              "foodChain": [
+                {
+                  "type": "egg",
+                  "id": 9,
+                  "colorId": 4
+                }
+              ]
+            }
+          ]
+      }], 'and', 0);
+        loadAnimation(results, 0);
+        startAnimation(results, 0);
     }
 
     function getDataAsFamily(){
@@ -147,9 +197,21 @@ var controller = (function(){
         }
     }
 
+    function loadAnimation(results, index){
+        renderer.clear("#fff");
+        scene.initialize();
+        scene.loadScene(results[index].steps[0].state);
+    }
+    function startAnimation(results, index){
+        
+    }
+
+
     return {
         "initialize": initialize,
         "swapElements": swapElements,
-        "startGame": startGame
+        "startGame": startGame,
+        "loadAnimation": loadAnimation
+
     };
 })();

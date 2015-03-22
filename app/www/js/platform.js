@@ -14,7 +14,7 @@ var platform = (function(){
             controller.startGame();
         });
     }
-    
+
     return {
         "initialize": initialize
     }

@@ -15,6 +15,11 @@ var simplerScene = (function(){
         colors = renderer.colors;
         initialX = windowSize.width;
         initialY = windowSize.height;
+
+        margin = .1;
+        elementArray = [];
+
+        dragging = false;
     }
 
 
