@@ -3,103 +3,6 @@ var controller = (function(){
     var data;
 
     function initialize(){
-        data = [
-            {
-                "type": "egg",
-                "id": 4,
-                "colorId": 1
-            },
-            {
-                "type": "family",
-                "id": 5,
-                "gators": [
-                    {
-                        "type": "gator",
-                        "id": 6,
-                        "colorId": 3
-                    },
-                    {
-                        "type": "gator",
-                        "id": 7,
-                        "colorId": 4
-                    }
-                ],
-                "foodChain": [
-                    {
-                        "type": "egg",
-                        "id": 8,
-                        "colorId": 4
-                    },
-                    {
-                        "type": "family",
-                        "id": 9,
-                        "gators": [
-                            {
-                                "type": "gator",
-                                "id": 10,
-                                "colorId": 5
-                            },
-                            {
-                                "type": "gator",
-                                "id": 11,
-                                "colorId": 6
-                            }
-                        ],
-                        "foodChain": [
-                            {
-                                "type": "egg",
-                                "id": 12,
-                                "colorId": 5
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "family",
-                "id": 13,
-                "gators": [
-                    {
-                        "type": "gator",
-                        "id": 14,
-                        "colorId": 2
-                    },
-                    {
-                        "type": "gator",
-                        "id": 15,
-                        "colorId": 1
-                    }
-                ],
-                "foodChain": [
-                    {
-                        "type": "egg",
-                        "id": 16,
-                        "colorId": 2
-                    }
-                ]
-            },
-            {
-                "type": "dummy",
-                "id": 17,
-            },
-            {
-                "type": "family",
-                "id": 18,
-                "gators": [
-                    {
-                        "type": "dummy",
-                        "id": 19,
-                    }
-                ],
-                "foodChain": [
-                    {
-                        "type": "dummy",
-                        "id": 20,
-                    }
-                ]
-            }
-
-        ];
     }
 
     function startGame(){
@@ -108,15 +11,15 @@ var controller = (function(){
           "type": "family",
           "id": 1,
           "gators": [
-            {
-              "type": "gator",
-              "id": 2,
-              "colorId": 1
-            }, {
-             "type": "gator",
-             "id": 3,
-             "colorId": 2
-            }
+              {
+                "type": "gator",
+                "id": 2,
+                "colorId": 1
+              }, {
+               "type": "gator",
+               "id": 3,
+               "colorId": 2
+              }
           ],
           "foodChain": [
             {
@@ -151,7 +54,7 @@ var controller = (function(){
               ]
             }
           ]
-      }], 'and', 0);
+      }], 'and', 2);
         loadAnimation(results, 0);
         startAnimation(results, 0);
     }
@@ -197,13 +100,81 @@ var controller = (function(){
         }
     }
 
-    function loadAnimation(results, index){
+
+    function loadTestCase(foodchain, testcase){
+        var results = interpreter.test(foodchain, testcase);
+        return results;
+    }
+
+    function loadAnimation(results, index, step){
         renderer.clear("#fff");
         scene.initialize();
-        scene.loadScene(results[index].steps[0].state);
+        if (step){
+            scene.loadScene(results[index].steps[step].state);
+        }
+        else{
+            scene.loadScene(results[index].steps[0].state);
+        }
     }
     function startAnimation(results, index){
-        
+        var i = 0;
+        console.log(results[index].steps);
+        var repeat = false;
+        var interval = setInterval(function(){
+            i++;
+            console.log(i);
+            if (i == results[index].steps.length){
+                clearInterval(interval);
+                return;
+            }
+            console.log(results[index].steps[i].events);
+            var eaten_obj_id;
+            var eating_obj_id;
+
+            function eats(events){
+                console.log("events", events);
+                for (var a = 0; a < events.length; a++){
+                    console.log("events[a].action", events[a]);
+                    if (events[a] && events[a].action && events[a].action == "eat"){
+                        eaten_obj_id = events[a].food;
+                        console.log("a", a);
+                        console.log("eaten_obj_id", eaten_obj_id);
+                        eating_obj_id = events[a].gator;
+                        return true;
+                    }
+                }
+            }
+            if (!repeat && eats(results[index].steps[i].events)){
+                console.log("Now", results[index].steps[i].events);
+                console.log("Prev", results[index].steps[i-1].events);
+
+                console.log("eats");
+                repeat = true;
+                renderer.clear("#fff");
+                scene.initialize();
+                var intermidiate = JSON.parse(JSON.stringify(results[index].steps[i].state));
+                intermidiate.splice(1, 0, {
+                      "id": eaten_obj_id,
+                      "type": "family",
+                      "gators":[],
+                      "foodChain":[]
+                });
+                if (intermidiate[0].gators.length > 0){
+                    intermidiate[0].gators.splice(0,0, {"id": eaten_obj_id, "colorId":0, "type":"blank"});
+                }
+
+                scene.loadScene(intermidiate);
+                i = i-1;
+            }
+            else{
+                console.log("no eats");
+                repeat = false;
+                loadAnimation(results, index, i);
+
+
+            }
+            console.log(results[index].steps[i].state);
+        }, 1500);
     }
 
 

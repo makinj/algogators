@@ -339,7 +339,7 @@ var interpreter = (function(){
   function reduce(foodChain){
     refreshIds(foodChain);
     step = {"events":[]};
-    if(foodChain[0].gators.length>0){//alpha reduce or done
+    if(foodChain[0].gators && foodChain[0].gators.length>0){//alpha reduce or done
       if(foodChain.length==1){
         return 0;
       }
