@@ -1,122 +1,103 @@
 var controller = (function(){
 
-    var data;
+    var data, testData;
 
     function initialize(){
         data = [
-            {
-                "type": "egg",
-                "id": 4,
-                "colorId": 1
-            },
             {
                 "type": "family",
                 "id": 5,
                 "gators": [
                     {
-                        "type": "gator",
-                        "id": 6,
-                        "colorId": 3
-                    },
-                    {
-                        "type": "gator",
-                        "id": 7,
-                        "colorId": 4
-                    }
-                ],
-                "foodChain": [
-                    {
-                        "type": "egg",
-                        "id": 8,
-                        "colorId": 4
-                    },
-                    {
-                        "type": "family",
-                        "id": 9,
-                        "gators": [
-                            {
-                                "type": "gator",
-                                "id": 10,
-                                "colorId": 5
-                            },
-                            {
-                                "type": "gator",
-                                "id": 11,
-                                "colorId": 6
-                            }
-                        ],
-                        "foodChain": [
-                            {
-                                "type": "egg",
-                                "id": 12,
-                                "colorId": 5
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "family",
-                "id": 13,
-                "gators": [
-                    {
-                        "type": "gator",
-                        "id": 14,
-                        "colorId": 2
-                    },
-                    {
-                        "type": "gator",
-                        "id": 15,
-                        "colorId": 1
-                    }
-                ],
-                "foodChain": [
-                    {
-                        "type": "egg",
-                        "id": 16,
-                        "colorId": 2
-                    }
-                ]
-            },
-            {
-                "type": "dummy",
-                "id": 17,
-            },
-            {
-                "type": "family",
-                "id": 18,
-                "gators": [
-                    {
                         "type": "dummy",
-                        "id": 19,
+                        "id": 20
                     }
                 ],
                 "foodChain": [
                     {
                         "type": "dummy",
-                        "id": 20,
+                        "id": 21
                     }
                 ]
             }
-
+        ];
+        testData = [
+            {
+                input: [{
+                    "type": "egg",
+                    "id": 8,
+                    "colorId": 4
+                }],
+                output: [{
+                    "type": "egg",
+                    "id": 8,
+                    "colorId": 4
+                }]
+            },
+            {
+                input: [{
+                    "type": "family",
+                    "id": 9,
+                    "gators": [
+                        {
+                            "type": "gator",
+                            "id": 10,
+                            "colorId": 5
+                        },
+                        {
+                            "type": "gator",
+                            "id": 11,
+                            "colorId": 6
+                        }
+                    ],
+                    "foodChain": [
+                        {
+                            "type": "egg",
+                            "id": 12,
+                            "colorId": 5
+                        }
+                    ]
+                }],
+                output: [{
+                    "type": "family",
+                    "id": 9,
+                    "gators": [
+                        {
+                            "type": "gator",
+                            "id": 10,
+                            "colorId": 5
+                        },
+                        {
+                            "type": "gator",
+                            "id": 11,
+                            "colorId": 6
+                        }
+                    ],
+                    "foodChain": [
+                        {
+                            "type": "egg",
+                            "id": 12,
+                            "colorId": 5
+                        }
+                    ]
+                }]
+            },
         ];
     }
 
     function startGame(){
-        scene.loadScene(data);
+        scene.loadScene(data,testData);
     }
 
-    function getDataAsFamily(){
+    function getDataAsFamily(data){
         return {type:"family",gators:[],foodChain:data};
     }
 
     function swapElements(id1, id2){
-        console.log(JSON.stringify(data,4));
-        traverseChild(getDataAsFamily(), function(child1, parent1, child1Name){
+        traverseChild(getDataAsFamily(data), function(child1, parent1, child1Name){
             if (child1.id == id1){
-                traverseChild(getDataAsFamily(), function(child2, parent2, child2Name){
+                traverseChild(getDataAsFamily(data), function(child2, parent2, child2Name){
                     if (child2.id == id2){
-                        console.log("Found");
                         parent2[child2Name] = child1;
                         parent1[child1Name] = child2;
                         return true;
@@ -125,8 +106,58 @@ var controller = (function(){
                 return true;
             }
         });
-        scene.loadScene(data);
-        console.log(JSON.stringify(data,4));
+        scene.loadScene(data,testData);
+    }
+
+    function insertElement(element, intoObjectId){
+        var uid = Math.floor(Math.random() * 99999999);
+        //TODO check that id is unique
+        var copiedObject = JSON.parse(JSON.stringify(element));
+        copiedObject.id = uid;
+        traverseChild(getDataAsFamily(data), function(child,parentArray, index){
+            if (child.id == intoObjectId){
+                parentArray.splice(index,0, copiedObject);
+                return true;
+            }
+        });
+        scene.loadScene(data, testData);
+    }
+
+    function makeFamily(elementId){
+        // Note* this can't be done to eggs
+        var uid = Math.floor(Math.random() * 99999999);
+        //TODO check that id is unique
+        traverseChild(getDataAsFamily(data), function(child, parent, index){
+            if (child.id == elementId && child.type == "gator"){
+                parent[index] = {
+                    "type": "family",
+                    "id": uid,
+                    "gators":[child],
+                    "foodChain":[{
+                        "id": uid+1,
+                        "type": "dummy"
+                    }]
+                };
+                return true;
+            }
+        });
+        scene.loadScene(data, testData);
+    }
+
+    function newFamily(family){
+        data.push(family);
+        scene.loadScene(data,testData);
+    }
+
+    function deleteElement(elementId){
+        traverseChild(getDataAsFamily(data), function(child,parent,index){
+            if (child.id == elementId){
+                parent.splice(index,1);
+                return true;
+            }
+        });
+        validateAndCorrect(data);
+        scene.loadScene(data,testData);
     }
 
     function traverseChild(element, callback){
@@ -147,9 +178,36 @@ var controller = (function(){
         }
     }
 
+    function getHighestColor(foodChain){
+        var largestColorId = 5;
+        traverseChild(getDataAsFamily(foodChain), function(element){
+            if (element.colorId && element.colorId > largestColorId){
+                largestColorId = element.colorId;
+            }
+        });
+        return largestColorId;
+    }
+
+    function validateAndCorrect(data){
+        traverseChild(getDataAsFamily(data), function(child,parent,index){
+            if (child.type == "family"){
+                if (child.gators.length == 0 || child.foodChain.length == 0){
+                    parent.splice(index,1);
+                    validateAndCorrect(data);
+                    return true;
+                }
+            }
+        });
+    }
+
     return {
         "initialize": initialize,
         "swapElements": swapElements,
+        "makeFamily":makeFamily,
+        "newFamily": newFamily,
+        "insertElement": insertElement,
+        "deleteElement": deleteElement,
+        "getHighestColor": getHighestColor,
         "startGame": startGame
     };
 })();
