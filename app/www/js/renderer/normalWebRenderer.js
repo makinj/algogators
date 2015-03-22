@@ -2,7 +2,7 @@ var normalWebRenderer = (function(){
 
     var colors = ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"];
 
-    var imgNames = ["banner", "next", "back"];
+    var imgNames = ["banner", "next", "back", "chevron"];
 
     var imgs = {};
 
@@ -186,17 +186,22 @@ var normalWebRenderer = (function(){
     }
 
     function drawSelectionPanel(x,y,width,height){
+        context.globalAlpha = .5;
         context.fillStyle = "#ddd";
         context.fillRect(x,y,width,height);
+        context.globalAlpha = 1;
     }
 
     function drawIOPanel(x,y,w,h){
         context.fillStyle = "#eee";
         context.fillRect(x,y,w,h);
-        context.fillRect(x - 40,y,40,40);
-        context.fillStyle = "#999";
-        context.fillRect(x-23, y+10, 6, 25);
-        context.fillRect(x-35, y+5, 30, 6);
+        context.globalAlpha = .4;
+        drawImgButton("chevron",x - 30,y + 30, 40,40);
+        context.globalAlpha = 1;
+        // context.fillRect(x - 40,y,40,40);
+        // context.fillStyle = "#999";
+        // context.fillRect(x-23, y+10, 6, 25);
+        // context.fillRect(x-35, y+5, 30, 6);
     }
     function drawRightArrow(x,y,rw,rh,good){
         var w,h;
@@ -223,7 +228,7 @@ var normalWebRenderer = (function(){
         context.closePath();
     }
     function drawPlus(x,y,w,h){
-        context.fillStyle = "#ddd";
+        context.fillStyle = "#333";
         context.fillRect(x, y + h/3, w, h/3);
         context.fillRect(x + w/3,y, w/3,h);
     }
@@ -312,6 +317,8 @@ var normalWebRenderer = (function(){
         "drawPlus": drawPlus,
         "drawCheck": drawCheck,
         "drawTrash": drawTrash,
+        "clearCanvas": clearCanvas,
+        "getContext": function(){return context;},
         "drawRightArrow": drawRightArrow,
         "getAlligatorSize": getAlligatorSize,
         "getEggSize": getEggSize,
