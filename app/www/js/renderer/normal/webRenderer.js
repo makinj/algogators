@@ -34,7 +34,7 @@ var webRenderer = (function(){
 
     function loadImages(onFinish){
 
-        var totalImages = colors.length * 2 + 1;
+        var totalImages = colors.length * 2 + 2;
         var loadedImages = 0;
         function markImageLoaded(){
             loadedImages ++;
@@ -47,6 +47,11 @@ var webRenderer = (function(){
         trashImage.src = "./img/trash.png";
         trashImage.onload = markImageLoaded;
         imgs["trash"] = trashImage;
+
+        var checkImage = new Image();
+        checkImage.src = "./img/check.png";
+        checkImage.onload = markImageLoaded;
+        imgs["check"] = checkImage;
 
         colors.forEach(function(color){
             // Load the colored egg and alligator
@@ -111,8 +116,10 @@ var webRenderer = (function(){
     function drawTrash(x,y,width,height){
         if (!assetsLoaded) return;
         var trashRatio = getTrashSize().width / getTrashSize().height;
+        context.globalAlpha = .4;
         context.drawImage(imgs["trash"],
             (x + width/2) - height * trashRatio/2,y,height * trashRatio,height);
+        context.globalAlpha = 1;
     }
 
     function drawHighlight(x,y,width,height,color){
@@ -181,6 +188,13 @@ var webRenderer = (function(){
         context.fillRect(x, y + h/3, w, h/3);
         context.fillRect(x + w/3,y, w/3,h);
     }
+    function drawCheck(x,y,w,h){
+        if (!assetsLoaded) return;
+        context.globalAlpha = .4;
+        context.drawImage(imgs["check"],
+            x,y,w,h);
+        context.globalAlpha = 1;
+    }
 
 
     function getAlligatorSize(){
@@ -214,6 +228,7 @@ var webRenderer = (function(){
         "drawIOPanel": drawIOPanel,
         "drawSelectionPanel": drawSelectionPanel,
         "drawPlus": drawPlus,
+        "drawCheck": drawCheck,
         "drawTrash": drawTrash,
         "drawRightArrow": drawRightArrow,
         "getAlligatorSize": getAlligatorSize,

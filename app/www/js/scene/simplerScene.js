@@ -14,6 +14,7 @@ var simplerScene = (function(){
     var colorElements = [];
     var currentColor;
     var plusElement;
+    var checkElement;
     var hoverElement;
 
     var dragging = false;
@@ -53,6 +54,12 @@ var simplerScene = (function(){
             width:30,
             height:30
         };
+        checkElement = {
+            x: windowSize.width - 50,
+            y: expWindowHeight - 50,
+            width:40,
+            height:40
+        };
         currentColor = 0;
         setInterval(function(){
             animateIOPanel();
@@ -66,16 +73,17 @@ var simplerScene = (function(){
     function loadUIElements(foodChain){
         colorElements = [];
         var highestColor = controller.getHighestColor(foodChain);
-        var boxSize = Math.min(colorPanelWidth / highestColor, colorPanelHeight);
+        var boxWidth = colorPanelWidth / highestColor;
+        var boxHeight = colorPanelHeight;
         for (var i = 0;i<highestColor;i++){
             var colorElement = {
                 color: i,
                 position:{
-                    x: colorPanelWidth/2 - boxSize * highestColor /2 + boxSize/2 + boxSize *i,
+                    x: boxWidth * i,
                     y: colorPanelY,
                 },
-                width: boxSize,
-                height:boxSize
+                width: boxWidth,
+                height:boxHeight
             };
             colorElements.push(colorElement);
         }
@@ -123,6 +131,7 @@ var simplerScene = (function(){
                 colors[colorElement.color]
             );
         });
+        renderer.drawCheck(checkElement.x, checkElement.y, checkElement.width, checkElement.height);
         renderer.drawIOPanel(ioPanel.x,ioPanel.y,ioPanel.width,ioPanel.height);
         drawIOPanelElements();
 
@@ -329,6 +338,11 @@ var simplerScene = (function(){
             openIOPanel();
         }else{
             closeIOPanel();
+        }
+
+        if (x > checkElement.x && x < checkElement.x + checkElement.width &&
+            y > checkElement.y && y < checkElement.y + checkElement.height){
+            openIOPanel();
         }
 
         if (x > plusElement.x && x < plusElement.x + plusElement.width &&
