@@ -13,6 +13,7 @@ var simplerScene = (function(){
     var elementArray = [];
     var arrowArray = [];
     var runResults = [0,0,0,0,0,0,0,0,0,0];
+    var numTestCase = 0;
     var arrowHit = 0;
 
     var colorElements = [];
@@ -100,6 +101,7 @@ var simplerScene = (function(){
     }
 
     function loadFoodChain(foodChain, testFoodChains){
+        numTestCase = testFoodChains.length;
         elementArray = [];
         for (var i =0;i<foodChain.length;i++){
             addElement(foodChain[i], expWindowX + i * (expWindowWidth/foodChain.length),expWindowY,(expWindowWidth/foodChain.length), expWindowHeight);
@@ -413,6 +415,14 @@ var simplerScene = (function(){
     function uiMouseDown(x,y){
 
         if (ioPanel.open && x > ioPanel.x){
+            console.log(x,y,ioPanel.x,ioPanel.y,ioPanel.width, ioPanel.height);
+            var split = 1 / numTestCase ;
+            for (var i = 0 ; i < numTestCase ; i++){
+                if (y > ioPanel.y + ioPanel.height*split*i){
+                    controller.startAnimation(i, expWindowHeight, expWindowWidth, expWindowX,expWindowY );
+                }
+            }
+
             return;
         }else if (!ioPanel.open && x > ioPanel.x - 40&&
                   y < ioPanel.y + 40){

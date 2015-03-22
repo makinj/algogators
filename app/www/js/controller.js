@@ -171,6 +171,12 @@ var controller = (function(){
         return passing;
     }
 
+    function startAnimation(testcaseNum, h,w, topLeftx,topLefty ){
+        animateController.initialize(h,w, topLeftx,topLefty );
+        animateController.startVisualize(data, testName.toLowerCase(), testcaseNum);
+
+
+    }
     return {
         "initialize": initialize,
         "swapElements": swapElements,
@@ -182,6 +188,7 @@ var controller = (function(){
         "removeDummies": removeDummies,
         "startGame": startGame,
         "openMainMenu": openMainMenu,
-        "runTests": runTests
+        "runTests": runTests,
+        "startAnimation":startAnimation
     };
 })();
