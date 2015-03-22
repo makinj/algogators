@@ -250,6 +250,7 @@ var controller = (function(){
                     }
                 }
                 else if (state == 2){ //Eat
+                    //remove foodObjId
                     if (time > 3 * (transitiontime/divisor)){
                         console.log("eatInterval",time);
                         time = 0;
@@ -257,6 +258,7 @@ var controller = (function(){
                     }
                 }
                 else if (state == 3){ //Die
+                    //remove eatingGatorId
                     if (time > 3 * (transitiontime/divisor)){
                         console.log("dieInterval",time);
                         time = 0;
@@ -264,6 +266,7 @@ var controller = (function(){
                     }
                 }
                 else if (state == 4 && hatchState.hatch){ //Hatch
+                    // remove hatchingEggsIds and transition in intermidiate state
                     if (time > 3 * (transitiontime/divisor)){
                         console.log("hatchInterval",time);
                         time = 0;
