@@ -331,7 +331,6 @@ var simplerScene = (function(){
     var currentElementOffset;
 
     function uiMouseDown(x,y){
-				console.log("mouse down");
 
         if (ioPanel.open && x > ioPanel.x){
             return;
@@ -366,7 +365,6 @@ var simplerScene = (function(){
 
         var selectedElementId = getIdAt(x,y);
         if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
-						console.log("here");
             dragging = true;
             currentElementId = selectedElementId;
             currentElementIndex = getObjectIndexAtId(currentElementId);
@@ -433,6 +431,7 @@ var simplerScene = (function(){
     }
 
     function uiMouseUp(x,y){
+        console.log("here");
         var selectedElementId = getIdAt(x,y);
         if (currentElementId == "DRAGGY_GATOR"){
             dragging = false;
@@ -440,24 +439,30 @@ var simplerScene = (function(){
                 "type": "gator",
                 "colorId": currentColor
             },selectedElementId);
+            console.log("1");
         }else if (currentElementId == "DRAGGY_EGG"){
             dragging = false;
             controller.insertElement({
                 "type": "egg",
                 "colorId": currentColor
             },selectedElementId);
+            console.log("2");
         }else if (currentElementId == "DRAGGY_DUMMY"){
             dragging = false;
             controller.makeFamily(selectedElementId);
+            console.log("3");
         }else if (selectedElementId == "DRAGGY_TRASH"){
             dragging = false;
             controller.deleteElement(currentElementId);
+            console.log("4");
         }else if (selectedElementId && elementArray[getObjectIndexAtId(selectedElementId)].draggable){
             dragging = false;
             controller.swapElements(selectedElementId,currentElementId);
+            console.log("5");
         }
         else{
             dragging = false;
+            console.log("6");
         }
         renderNextFrame = true;
     }
