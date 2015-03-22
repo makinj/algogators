@@ -491,6 +491,11 @@ var interpreter = (function(){
     return results;
   }
 
+  function getTestCase(testName){
+      test = tests[testName];
+      return test;
+  }
+
   return {
     "refreshIds":refreshIds,
     "reduce":reduce,
@@ -498,7 +503,8 @@ var interpreter = (function(){
     "replaceEggs":replaceEggs,
     "copyFamily":copyFamily,
     "fullyReduce":fullyReduce,
-    "test": test
+    "test": test,
+    "getTestCase":getTestCase
   };
 })();
 // console.log(JSON.stringify(interpreter.test([NOT], 'not')));

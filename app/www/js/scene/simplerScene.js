@@ -361,6 +361,8 @@ var simplerScene = (function(){
     function openIOPanel(){
         if (ioPanel.open) return;
         ioPanel.open = true;
+
+        controller.runTests();
     }
 
     var currentElementOffset;

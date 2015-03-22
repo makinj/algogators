@@ -141,6 +141,7 @@ var normalWebRenderer = (function(){
         if (!assetsLoaded) return;
         // Draw the square
         context.beginPath();
+        context.lineWidth = 1.25;
         context.setLineDash([5,2]);
         context.rect(x,y,width,height);
         context.stroke();
