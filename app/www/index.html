@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+
+        </div>
+        <!-- <script type="text/javascript" src="cordova.js"></script> -->
+        <script type="text/javascript" src="./bower_components/jquery/dist/jquery.min.js"></script>
+        <!-- <script type="text/javascript" src="js/index.js"></script> -->
+        <script type='text/javascript' src='./js/renderer/normalWebRenderer.js'></script>
+        <script type='text/javascript' src='./js/scene/simplerScene.js'></script>
+        <script type='text/javascript' src='./js/animateController.js'></script>
+        <script type='text/javascript' src='./js/ui/webUI.js'></script>
+        <script type='text/javascript' src='./js/platform.js'></script>
+        <script type="text/javascript">
+            // app.initialize();
+            platform.initialize("android");
+
+        </script>
+    </body>
+</html>
